@@ -5,8 +5,8 @@
 
 #board {
   border: solid 1px black;
-  width: 320px;
-  height: 320px;
+  width: 400px;
+  height: 400px;
   display: inline-flex;
   flex-wrap: wrap;
   margin: auto;
@@ -14,7 +14,7 @@
 
 .row {
   display: flex;
-  width: 320px;
+  width: 400px;
   height: 40px;
 }
 

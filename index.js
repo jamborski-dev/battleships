@@ -1,4 +1,4 @@
-const boardSize = 8;
+const boardSize = 10;
 const currentShipSize = 5;
 let currentRotation = false;
 
@@ -140,10 +140,8 @@ boardDiv.addEventListener('mouseout', event => {
 
 // mouse click 
 boardDiv.addEventListener('mousedown', event => {
-
   if (event.button === 2) {
     hoverOffAll();
-    hoverShipOn(parseLocation(event.target.dataset.location), currentShipSize, currentRotation);
   
     // change current rotation [true: vertical, false: horizontal]
     if (currentRotation) {
@@ -151,6 +149,8 @@ boardDiv.addEventListener('mousedown', event => {
     } else {
       currentRotation = true;
     }
+ 
+    hoverShipOn(parseLocation(event.target.dataset.location), currentShipSize, currentRotation);
   }
 });
 
