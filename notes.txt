@@ -1,0 +1,8 @@
+Placing ships on the board
+  - update board array, than update players board
+
+Randomly generate ships for the opposite player
+
+Create method to launch torpedos
+
+Create AI for single player mode

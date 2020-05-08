@@ -1,17 +1,18 @@
 const boardSize = 10;
-const currentShipSize = 5;
-let currentRotation = false;
+const shipSize = 5;
+let rotation = false;
 
 // fill board array
 const board = Array(boardSize).fill(0).map(() => Array(boardSize));
 
-const setBoard = (root, size) => {
-  for (let i = 0; i < size; i++) {
+// set HTML board & set 'data-location' attr for each cell
+const setBoard = (root) => {
+  for (let i = 0; i < boardSize; i++) {
     // create rows
     const row = document.createElement("div");
     row.classList.add("row");
 
-    for (let j = 0; j < size; j++) {
+    for (let j = 0; j < boardSize; j++) {
       // create columns
       const cell = document.createElement("div");
       cell.classList.add("cell");
@@ -26,7 +27,9 @@ const setBoard = (root, size) => {
   }
 }
 
-const parseLocation = (location) => {
+// helper functions
+const parseLocation = (event) => {
+  const { location } = event.target.dataset;
   return {
     posX: parseInt(location.split('-')[0]),
     posY: parseInt(location.split('-')[1])
@@ -52,10 +55,11 @@ const getLeft = (currentCell, amount) => {
 }
 
 // show ship to set it on board / right-click to change rotation
-const hoverShip = (location, shipSize, rotation, isHover) => {
+const hoverShip = (location, isHover) => {
   const topCells = [];
   const leftCells = [];
 
+  // if 'rotatation' === true ship is vertical, if false horizontaly
   if (rotation) {
     for (let i = 0; i < shipSize; i++) {
       topCells[i] = getTop(location, i);
@@ -66,35 +70,39 @@ const hoverShip = (location, shipSize, rotation, isHover) => {
     }
   }
 
+  // if either arrays is not empty select all cells and add or remove class of 'ship'
   if (topCells) {
-    topCells.forEach((cell) => {
-      const div = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
-      if (isHover) {
-        if (div) div.classList.add('ship');
-      } else {
-        if (div) div.classList.remove('ship');
-      }
+    topCells.forEach(cell => {
+      toggleHover(cell, isHover);
     });
   }
 
   if (leftCells) {
-    leftCells.forEach((cell) => {
-      const div = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
-      if (isHover) {
-        if (div) div.classList.add('ship');
-      } else {
-        if (div) div.classList.remove('ship');
-      }
+    leftCells.forEach(cell => {
+      toggleHover(cell, isHover);
     });
+  }
+}
+
+const toggleHover = (cell, isHover) => {
+  const div = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
+  if (isHover) {
+    if (div) div.classList.add('ship');
+  } else {
+    if (div) div.classList.remove('ship');
   }
 }
 
 const hoverOffAll = () => {
   const allHovered = document.querySelectorAll('.ship');
   allHovered.forEach(div => {
-    console.log(div);
     div.classList.remove('ship');
   });
+}
+
+// place ship where hovered
+const placeShip = () => {
+
 }
 
 
@@ -107,31 +115,37 @@ const boardDiv = document.querySelector("#board");
 // mouseover
 boardDiv.addEventListener('mouseover', event => {
   if (event.target !== event.currentTarget) {
-    const { location } = event.target.dataset;
-    hoverShip(parseLocation(location), currentShipSize, currentRotation, true);
+    hoverShip(parseLocation(event), true);
 }});
 
 // mouseout
 boardDiv.addEventListener('mouseout', event => {
   if (event.target !== event.currentTarget) {
-    const { location } = event.target.dataset;
-    hoverShip(parseLocation(location), currentShipSize, currentRotation, false);
+    hoverShip(parseLocation(event), false);
   }
 });
 
 // mouse click 
 boardDiv.addEventListener('mousedown', event => {
+
+  // if rightclick
   if (event.button === 2) {
     hoverOffAll();
   
     // change current rotation [true: vertical, false: horizontal]
-    if (currentRotation) {
-      currentRotation = false;
+    if (rotation) {
+      rotation = false;
     } else {
-      currentRotation = true;
+      rotation = true;
     }
  
-    hoverShip(parseLocation(event.target.dataset.location), currentShipSize, currentRotation, true);
+    // hover on with new rotation
+    hoverShip(parseLocation(event), true);
+  }
+
+  // if leftclick
+  if (event.button === 0) {
+    // place ship at this location
   }
 });
 
