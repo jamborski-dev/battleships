@@ -55,9 +55,10 @@ const getLeft = (currentCell, amount) => {
 }
 
 // show ship to set it on board / right-click to change rotation
-const hoverShip = (location, isHover) => {
+const hoverShip = (event, isHover, isClick = false) => {
   const topCells = [];
   const leftCells = [];
+  const location = parseLocation(event);
 
   // if 'rotatation' === true ship is vertical, if false horizontaly
   if (rotation) {
@@ -71,38 +72,55 @@ const hoverShip = (location, isHover) => {
   }
 
   // if either arrays is not empty select all cells and add or remove class of 'ship'
-  if (topCells) {
-    topCells.forEach(cell => {
-      toggleHover(cell, isHover);
-    });
-  }
+  if (!isClick) {
 
-  if (leftCells) {
-    leftCells.forEach(cell => {
-      toggleHover(cell, isHover);
-    });
+    if (topCells) {
+      topCells.forEach(cell => {
+        toggleHover(cell, isHover);
+      });
+    }
+  
+    if (leftCells) {
+      leftCells.forEach(cell => {
+        toggleHover(cell, isHover);
+      });
+    }
+  } else {
+
+    if (topCells) {
+      topCells.forEach(cell => {
+        placeShip(cell);
+      });
+    } 
+  
+    if (leftCells) {
+      leftCells.forEach(cell => {
+        placeShip(cell);
+      });
+    }
   }
 }
 
 const toggleHover = (cell, isHover) => {
   const div = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
   if (isHover) {
-    if (div) div.classList.add('ship');
+    if (div) div.classList.add('ship-hover');
   } else {
-    if (div) div.classList.remove('ship');
+    if (div) div.classList.remove('ship-hover');
   }
 }
 
 const hoverOffAll = () => {
-  const allHovered = document.querySelectorAll('.ship');
+  const allHovered = document.querySelectorAll('.ship-hover');
   allHovered.forEach(div => {
-    div.classList.remove('ship');
+    div.classList.remove('ship-hover');
   });
 }
 
 // place ship where hovered
-const placeShip = () => {
-
+const placeShip = (cell) => {
+  const div = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
+  if (div) div.classList.add('ship');
 }
 
 
@@ -115,13 +133,13 @@ const boardDiv = document.querySelector("#board");
 // mouseover
 boardDiv.addEventListener('mouseover', event => {
   if (event.target !== event.currentTarget) {
-    hoverShip(parseLocation(event), true);
+    hoverShip(event, true);
 }});
 
 // mouseout
 boardDiv.addEventListener('mouseout', event => {
   if (event.target !== event.currentTarget) {
-    hoverShip(parseLocation(event), false);
+    hoverShip(event, false);
   }
 });
 
@@ -133,19 +151,16 @@ boardDiv.addEventListener('mousedown', event => {
     hoverOffAll();
   
     // change current rotation [true: vertical, false: horizontal]
-    if (rotation) {
-      rotation = false;
-    } else {
-      rotation = true;
-    }
+    rotation ? rotation = false : rotation = true;
  
     // hover on with new rotation
-    hoverShip(parseLocation(event), true);
+    hoverShip(event, true);
   }
 
   // if leftclick
   if (event.button === 0) {
     // place ship at this location
+    hoverShip(event, true, true);
   }
 });
 

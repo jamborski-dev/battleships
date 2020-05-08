@@ -26,6 +26,11 @@
   border: 1px solid rgb(0, 0, 0);
 }
 
-.ship {
+.ship-hover {
   background-color: rgba(184, 173, 23, 0.4);
+}
+
+.ship {
+  background-color: rgb(12, 87, 148);
+  border: none;
 }
