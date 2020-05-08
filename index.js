@@ -1,7 +1,9 @@
 const boardSize = 10;
 const shipSize = 5;
-let rotation = false;
+let rotation = true;
 let isOnMap = true;
+let shipState = 'ship-hover';
+
 
 // fill board array
 const board = Array(boardSize).fill(0).map(() => Array(boardSize));
@@ -55,8 +57,10 @@ const getLeft = (currentCell, amount) => {
   }
 }
 
-const getShip = (cell) => {
-  return document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
+const getCell = (cell) => {
+  const selectedCell = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
+  if (!selectedCell) return false;
+  return selectedCell;
 }
 
 // show ship to set it on board / right-click to change rotation
@@ -77,43 +81,45 @@ const hoverShip = (event, isHover, isClick = false) => {
     }
   }
 
+  // check if whole ship is inside the board
+  if (topCells) checkBounds(topCells);
+  if (leftCells) checkBounds(leftCells);
 
-  // if either arrays is not empty select all cells and add or remove class of 'ship'
   if (!isClick) {
-
-    if (topCells) {
-      topCells.forEach(cell => {
-        toggleHover(cell, isHover);
-      });
-    }
-  
-    if (leftCells) {
-      leftCells.forEach(cell => {
-        toggleHover(cell, isHover);
-      });
-    }
+  // if either arrays is not empty select all cells and add or remove class of 'ship'
+    if (topCells) toggleHover(topCells, isHover);
+    if (leftCells) toggleHover(leftCells, isHover);
   } else {
-
-    if (topCells) {
-      topCells.forEach(cell => {
-        placeShip(cell);
-      });
-    } 
-  
-    if (leftCells) {
-      leftCells.forEach(cell => {
-        placeShip(cell);
-      });
-    }
+    if (!isOnMap) return;
+    // OR place ship at this position
+    if (topCells) placeShip(topCells);
+    if (leftCells) placeShip(leftCells);
   }
 }
 
-const toggleHover = (cell, isHover) => {
-  const ship = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
-  if (isHover) {
-    if (ship) ship.classList.add('ship-hover');
-  } else {
-    if (ship) ship.classList.remove('ship-hover');
+const toggleHover = (cells, isHover) => {
+  cells.forEach(cell => {
+    const ship = getCell(cell);
+    if (isHover) {
+      if (ship) ship.classList.add(shipState);
+    } else {
+      if (ship) ship.classList.remove(shipState);
+    }
+  });
+}
+
+const checkBounds = (cells) => {
+  cells.forEach(cell => {
+    if (!getCell(cell)) {
+      isOnMap = false;
+      return;
+    } else { isOnMap = true } 
+  });
+
+  if (isOnMap) {
+    shipState = 'ship-hover';
+  } else { 
+    shipState = 'ship-hover-alert'
   }
 }
 
@@ -125,17 +131,23 @@ const hoverOffAll = () => {
 }
 
 // place ship where hovered
-const placeShip = (cell) => {
-  const div = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
-  if (div) div.classList.add('ship');
+const placeShip = (cells) => {
+  cells.forEach((cell) => {
+    const div = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
+    if (div) div.classList.add('ship');
+  });
 }
 
 
-// select container div
-const boardDiv = document.querySelector("#board");
 
-// Event Listeners
+
+
+// Event Listeners & board initialisation
 // ---------------------------------------------------------
+
+// select container div & init boarrd
+const boardDiv = document.querySelector("#board");
+setBoard(boardDiv, boardSize);
 
 // mouseover
 boardDiv.addEventListener('mouseover', event => {
@@ -152,22 +164,16 @@ boardDiv.addEventListener('mouseout', event => {
 
 // mouse click 
 boardDiv.addEventListener('mousedown', event => {
-
-  // if rightclick
-  if (event.button === 2) {
+  if (event.button === 2) { // right-click
     hoverOffAll();
   
     // change current rotation [true: vertical, false: horizontal]
     rotation ? rotation = false : rotation = true;
- 
-    // hover on with new rotation
-    hoverShip(event, true);
+    hoverShip(event, true); 
   }
 
-  // if leftclick
-  if (event.button === 0) {
-    // place ship at this location
-    hoverShip(event, true, true);
+  if (event.button === 0) { // left-click
+    hoverShip(event, true, true); // 3rd arg as true will place ship at current location
   }
 });
 
@@ -175,6 +181,3 @@ boardDiv.addEventListener('mousedown', event => {
 boardDiv.addEventListener('contextmenu', event => {
   event.preventDefault();
 });
-
-// init board
-setBoard(boardDiv, boardSize);
