@@ -1,6 +1,7 @@
 const boardSize = 10;
 const shipSize = 5;
 let rotation = false;
+let isOnMap = true;
 
 // fill board array
 const board = Array(boardSize).fill(0).map(() => Array(boardSize));
@@ -54,6 +55,10 @@ const getLeft = (currentCell, amount) => {
   }
 }
 
+const getShip = (cell) => {
+  return document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
+}
+
 // show ship to set it on board / right-click to change rotation
 const hoverShip = (event, isHover, isClick = false) => {
   const topCells = [];
@@ -61,6 +66,7 @@ const hoverShip = (event, isHover, isClick = false) => {
   const location = parseLocation(event);
 
   // if 'rotatation' === true ship is vertical, if false horizontaly
+  // get all cells of the ship and store it in the top or left array
   if (rotation) {
     for (let i = 0; i < shipSize; i++) {
       topCells[i] = getTop(location, i);
@@ -70,6 +76,7 @@ const hoverShip = (event, isHover, isClick = false) => {
       leftCells[i] = getLeft(location, i);
     }
   }
+
 
   // if either arrays is not empty select all cells and add or remove class of 'ship'
   if (!isClick) {
@@ -102,11 +109,11 @@ const hoverShip = (event, isHover, isClick = false) => {
 }
 
 const toggleHover = (cell, isHover) => {
-  const div = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
+  const ship = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
   if (isHover) {
-    if (div) div.classList.add('ship-hover');
+    if (ship) ship.classList.add('ship-hover');
   } else {
-    if (div) div.classList.remove('ship-hover');
+    if (ship) ship.classList.remove('ship-hover');
   }
 }
 
