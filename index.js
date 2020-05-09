@@ -8,7 +8,7 @@ let shipState = 'ship-hover';
 
 
 // fill board array
-const board = Array(boardSize).fill(0).map(() => Array(boardSize));
+const board = Array(boardSize).fill().map(() => Array(boardSize).fill(false));
 
 // set HTML board & set 'data-location' attr for each cell
 const setBoard = (root) => {
@@ -65,6 +65,14 @@ const getCell = (cell) => {
   return selectedCell;
 }
 
+const getRandomLocation = () => {
+  return {
+    posX: Math.floor(Math.random() * boardSize),
+    posY: Math.floor(Math.random() * boardSize)
+  }
+}
+
+// - Setting up a board ---------------------------
 // show ship to set it on board / right-click to change rotation
 const hoverShip = (event, isHover, isClick = false) => {
   const topCells = [];
@@ -84,25 +92,17 @@ const hoverShip = (event, isHover, isClick = false) => {
   }
 
   // check if whole ship is inside the board
-  if (topCells.length > 0) {
-    checkAvailable(topCells);
-  }
-  if (leftCells.length > 0) {
-    checkAvailable(leftCells);
-  }
+  if (topCells.length > 0) checkAvailable(topCells)
+  if (leftCells.length > 0) checkAvailable(leftCells);
 
-  if (isAvailable) {
-    shipState = 'ship-hover';
-  } else { 
-    shipState = 'ship-hover-alert';
-  }
+  if (isAvailable) shipState = 'ship-hover';
+  else shipState = 'ship-hover-alert';
 
   if (!isClick) {
   // if either arrays is not empty select all cells and add or remove class of 'ship'
     if (topCells) toggleHover(topCells, isHover);
     if (leftCells) toggleHover(leftCells, isHover);
   } else {
-    if (!isOnMap || !isEmpty) return;
     // OR place ship at this position
     if (topCells) placeShip(topCells);
     if (leftCells) placeShip(leftCells);
@@ -126,11 +126,7 @@ const checkAvailable = (cells) => {
   isAvailable = cells.every(cell => {
     if (getCell(cell)) {
       isOnMap = true;
-      if (getCell(cell).classList.contains('ship')) {
-        isEmpty = false;
-      } else {
-        isEmpty = true;
-      }
+      getCell(cell).classList.contains('ship') ? isEmpty = false : isEmpty = true;    
     } else {
       isOnMap = false;
     }
@@ -150,11 +146,11 @@ const hoverOffAll = () => {
 const placeShip = (cells) => {
   cells.forEach((cell) => {
     const div = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
+    board[cell.posX][cell.posY] = 'X ';
     if (div) div.classList.add('ship');
   });
+  printOutput();
 }
-
-
 
 
 
@@ -198,7 +194,67 @@ boardDiv.addEventListener('mousedown', event => {
   }
 });
 
+// generate random ships on board
+const nextRandomShip = document.querySelector('#nextRandomShip');
+nextRandomShip.addEventListener('click', () => {
+  placeRandomShips();
+});
+
+const placeRandomShips = () => {
+  let topCells = [];
+  let leftCells = [];
+
+  do {
+    topCells = [];
+    leftCells = [];
+    const randomLocation = getRandomLocation();
+    const randomRotation = Boolean(Math.floor(Math.random() * 2));
+  
+    if (randomRotation) {
+      for (let i = 0; i < shipSize; i++) {
+        topCells[i] = getTop(randomLocation, i);
+      }
+    } else {
+      for (let i = 0; i < shipSize; i++) {
+        leftCells[i] = getLeft(randomLocation, i);
+      }
+    }
+  
+    // check if whole ship is inside the board
+    if (topCells.length > 0) checkAvailable(topCells);
+    if (leftCells.length > 0) checkAvailable(leftCells);
+
+    if (isAvailable) shipState = 'ship-hover';
+    else shipState = 'ship-hover-alert';
+
+    // OR place ship at this position
+    if (topCells) placeShip(topCells);
+    if (leftCells) placeShip(leftCells);
+
+  } while (!isAvailable); 
+
+  shipSize--;
+  
+}
+
 // prevent context menu to open over board
 boardDiv.addEventListener('contextmenu', event => {
   event.preventDefault();
 });
+
+
+// output board array for reference
+const outputDiv = document.querySelector('#output');
+const printOutput = () => {
+
+outputDiv.innerHTML = '';
+
+  board.forEach(row => {
+    row.forEach(cell => {
+      outputDiv.innerHTML += cell ? `X ` : `O `;
+    });
+    outputDiv.innerHTML += `<br>`;
+  });
+}
+
+printOutput();

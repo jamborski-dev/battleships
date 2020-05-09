@@ -37,3 +37,9 @@
 .ship {
   background-color: rgba(12, 87, 148, 0.6);
 }
+
+#output {
+  color: rgb(85, 81, 81);
+  font-family: monospace;
+  font-size: 30px;
+}
