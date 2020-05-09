@@ -1,7 +1,9 @@
 const boardSize = 10;
-const shipSize = 5;
+const shipSize = 4;
 let rotation = true;
 let isOnMap = true;
+let isEmpty = true;
+let isAvailable = true;
 let shipState = 'ship-hover';
 
 
@@ -82,15 +84,25 @@ const hoverShip = (event, isHover, isClick = false) => {
   }
 
   // check if whole ship is inside the board
-  if (topCells) checkBounds(topCells);
-  if (leftCells) checkBounds(leftCells);
+  if (topCells.length > 0) {
+    checkAvailable(topCells);
+  }
+  if (leftCells.length > 0) {
+    checkAvailable(leftCells);
+  }
+
+  if (isAvailable) {
+    shipState = 'ship-hover';
+  } else { 
+    shipState = 'ship-hover-alert';
+  }
 
   if (!isClick) {
   // if either arrays is not empty select all cells and add or remove class of 'ship'
     if (topCells) toggleHover(topCells, isHover);
     if (leftCells) toggleHover(leftCells, isHover);
   } else {
-    if (!isOnMap) return;
+    if (!isOnMap || !isEmpty) return;
     // OR place ship at this position
     if (topCells) placeShip(topCells);
     if (leftCells) placeShip(leftCells);
@@ -108,25 +120,27 @@ const toggleHover = (cells, isHover) => {
   });
 }
 
-const checkBounds = (cells) => {
-  cells.forEach(cell => {
-    if (!getCell(cell)) {
+const checkAvailable = (cells) => {
+  isAvailable = cells.every(cell => {
+    if (getCell(cell)) {
+      isOnMap = true;
+      if (getCell(cell).classList.contains('ship')) {
+        isEmpty = false;
+      } else {
+        isEmpty = true;
+      }
+    } else {
       isOnMap = false;
-      return;
-    } else { isOnMap = true } 
-  });
+    }
 
-  if (isOnMap) {
-    shipState = 'ship-hover';
-  } else { 
-    shipState = 'ship-hover-alert'
-  }
+    return isOnMap && isEmpty;
+  });
 }
 
 const hoverOffAll = () => {
-  const allHovered = document.querySelectorAll('.ship-hover');
+  const allHovered = document.querySelectorAll('.cell');
   allHovered.forEach(div => {
-    div.classList.remove('ship-hover');
+    div.classList.remove('ship-hover', 'ship-hover-alert');
   });
 }
 
