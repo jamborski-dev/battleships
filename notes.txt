@@ -6,3 +6,20 @@ Randomly generate ships for the opposite player
 Create method to launch torpedos
 
 Create AI for single player mode
+
+
+Algorithm
+
+1. Listen for mouseover
+  Before:
+  check rotation
+  check isInBounds
+  check isClick
+  1.1. Show ship with class 'hover'
+
+2. Listen for mouseout
+  2.1. Remove 'hover' class from ship at 1.1
+
+3. Listen for click
+  3.1. If right click toggle rotation
+  3.2. If left click placeship at current location

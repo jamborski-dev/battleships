@@ -1,5 +1,5 @@
 const boardSize = 10;
-const shipSize = 4;
+let shipSize = 5;
 let rotation = true;
 let isOnMap = true;
 let isEmpty = true;
@@ -106,6 +106,8 @@ const hoverShip = (event, isHover, isClick = false) => {
     // OR place ship at this position
     if (topCells) placeShip(topCells);
     if (leftCells) placeShip(leftCells);
+
+    shipSize--;
   }
 }
 
@@ -187,7 +189,12 @@ boardDiv.addEventListener('mousedown', event => {
   }
 
   if (event.button === 0) { // left-click
-    hoverShip(event, true, true); // 3rd arg as true will place ship at current location
+    if (shipSize > 1) {
+      hoverShip(event, true, true); // 3rd arg as true will place ship at current location
+    } else {
+      hoverShip(event, true, true);
+      console.log('Start game');
+    }
   }
 });
 
