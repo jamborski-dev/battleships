@@ -6,9 +6,10 @@ let isEmpty = true;
 let isAvailable = true;
 let shipState = 'ship-hover';
 
-
-// fill board array
+// fill boards array
 const board = Array(boardSize).fill().map(() => Array(boardSize).fill(false));
+const playerOneBoard = Array(boardSize).fill().map(() => Array(boardSize).fill(false));
+const playerTwoBoard = Array(boardSize).fill().map(() => Array(boardSize).fill(false));
 
 // set HTML board & set 'data-location' attr for each cell
 const setBoard = (root) => {
@@ -24,7 +25,7 @@ const setBoard = (root) => {
 
       // set location for each cell
       //  data-location attr in HTML elements
-      cell.setAttribute("data-location", `${i}-${j}`);
+      cell.setAttribute("data-location", `${root.id}-${i}-${j}`);
       row.appendChild(cell);
     }
 
@@ -36,8 +37,8 @@ const setBoard = (root) => {
 const parseLocation = (event) => {
   const { location } = event.target.dataset;
   return {
-    posX: parseInt(location.split('-')[0]),
-    posY: parseInt(location.split('-')[1])
+    posX: parseInt(location.split('-')[1]),
+    posY: parseInt(location.split('-')[2])
   }
 }
 
@@ -142,7 +143,6 @@ const hoverOffAll = () => {
   });
 }
 
-// place ship where hovered
 const placeShip = (cells) => {
   cells.forEach((cell) => {
     const div = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
@@ -174,66 +174,91 @@ const placeRandomShipAll = () => {
   }
 }
 
-
 // Event Listeners & board initialisation
 // ---------------------------------------------------------
+const addEvents = (root) => {
+  console.log(`Adding events for`, root);
+
+  // mouseover
+  root.addEventListener('mouseover', event => {
+    if (event.target !== event.currentTarget) {
+      hoverShip(event, true);
+  }});
+
+  // mouseout
+  root.addEventListener('mouseout', event => {
+    if (event.target !== event.currentTarget) {
+      hoverShip(event, false);
+    }
+  });
+
+  // mouse click 
+  root.addEventListener('mousedown', event => {
+    if (event.button === 2) { // right-click
+      hoverOffAll();
+    
+      // change current rotation [true: vertical, false: horizontal]
+      rotation ? rotation = false : rotation = true;
+      hoverShip(event, true); 
+    }
+
+    if (event.button === 0) { // left-click
+      if (shipSize > 1) {
+
+        console.log(isAvailable);
+        hoverShip(event, true, true); // 3rd arg as true will place ship at current location
+      } else {
+        hoverShip(event, true, true);
+        console.log('Start game');
+      }
+    }
+  });
+
+  // prevent context menu to open over board
+  root.addEventListener('contextmenu', event => {
+    event.preventDefault();
+  });
+}
+
 
 // select container div & init boarrd
-const boardDiv = document.querySelector("#board");
-setBoard(boardDiv, boardSize);
+const boardDiv = document.querySelector("#board1");
+const playerTwoBoardDiv = document.querySelector('#board2');
+setBoard(playerTwoBoardDiv);
+addEvents(playerTwoBoardDiv)
 
-// mouseover
-boardDiv.addEventListener('mouseover', event => {
-  if (event.target !== event.currentTarget) {
-    hoverShip(event, true);
-}});
+setBoard(boardDiv);
+addEvents(boardDiv)
 
-// mouseout
-boardDiv.addEventListener('mouseout', event => {
-  if (event.target !== event.currentTarget) {
-    hoverShip(event, false);
-  }
-});
 
-// mouse click 
-boardDiv.addEventListener('mousedown', event => {
-  if (event.button === 2) { // right-click
-    hoverOffAll();
-  
-    // change current rotation [true: vertical, false: horizontal]
-    rotation ? rotation = false : rotation = true;
-    hoverShip(event, true); 
-  }
-
-  if (event.button === 0) { // left-click
-    if (shipSize > 1) {
-
-      console.log(isAvailable);
-      hoverShip(event, true, true); // 3rd arg as true will place ship at current location
-    } else {
-      hoverShip(event, true, true);
-      console.log('Start game');
-    }
-  }
-});
 
 // generate random ships on board
 const randomShip = document.querySelector('#randomShip');
+const randomShipAll = document.querySelector('#randomShipAll');
+
 randomShip.addEventListener('click', () => {
   if (shipSize > 0) placeRandomShip();
   else disableButtons();
 });
 
-const randomShipAll = document.querySelector('#randomShipAll');
 randomShipAll.addEventListener('click', () => {
   placeRandomShipAll();
   disableButtons();
 });
 
-// prevent context menu to open over board
-boardDiv.addEventListener('contextmenu', event => {
-  event.preventDefault();
-});
+const disableButtons = () => {
+  randomShip.classList.add('disabled');
+  randomShipAll.classList.add('disabled');
+}
+
+const enableButtons = () => {
+  randomShip.classList.remove('disabled');
+  randomShipAll.classList.remove('disabled');
+}
+
+
+
+
 
 // output board array for reference
 const outputDiv = document.querySelector('#output');
@@ -246,15 +271,5 @@ outputDiv.innerHTML = '';
     outputDiv.innerHTML += `<br>`;
   });
 }
-
-const disableButtons = () => {
-  randomShip.classList.add('disabled');
-  randomShipAll.classList.add('disabled');
-}
-
-const enableButtons = () => {
-  randomShip.classList.remove('disabled');
-  randomShipAll.classList.remove('disabled');
-}
-
 printOutput();
+

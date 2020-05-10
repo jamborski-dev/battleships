@@ -1,12 +1,32 @@
+:root {
+  --board-scale: 0.8;
+}
+
 * {
   box-sizing: border-box;
   font-family: sans-serif;
 }
 
-#board {
+h1 {
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+h1 + legend {
+  font-size: 12px;
+  margin-bottom: 20px;
+  color: rgb(207, 124, 0);
+}
+
+body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+#board1, #board2 {
   border: solid 8px rgb(153, 153, 153);
-  width: 416px;
-  height: 416px;
+  width: calc((400px * var(--board-scale, 1)) + 16px);
+  height: calc((400px * var(--board-scale, 1)) + 16px);
   display: inline-flex;
   flex-wrap: wrap;
   margin: auto;
@@ -14,13 +34,13 @@
 
 .row {
   display: flex;
-  width: 400px;
-  height: 40px;
+  width: calc(400px * var(--board-scale, 1));
+  height: calc(40px * var(--board-scale, 1));
 }
 
 .cell {
-  width: 40px;
-  height: 40px;
+  width: calc(40px * var(--board-scale, 1));
+  height: calc(40px * var(--board-scale, 1));
   display: inline-block;
   margin: 0px;
   border: 1px solid rgb(0, 0, 0);
@@ -38,11 +58,11 @@
   background-color: rgba(12, 87, 148, 0.6);
 }
 
-#buttons {
-  margin-top: 10px;
+.buttons {
+  margin-bottom: 10px;
 }
 
-#buttons button {
+.buttons button {
   background-color: rgba(10, 108, 255, 0.867);
   color: #fff;
   padding: 10px 15px;
@@ -51,7 +71,7 @@
   outline: none;
 }
 
-#buttons button.disabled {
+.buttons button.disabled {
   cursor: none;
   background-color: rgb(158, 158, 158);
   color: rgba(255, 255, 255, 0.5);
@@ -60,5 +80,5 @@
 #output {
   color: rgb(85, 81, 81);
   font-family: monospace;
-  font-size: 30px;
+  font-size: 20px;
 }

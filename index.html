@@ -7,14 +7,34 @@
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <h1>Setting Player's Board</h1>
-  <div id="board"></div>
-  <div id="buttons">
-    <button id="randomShip">Random next ship</button>
-    <button id="randomShipAll">Random all ships</button>
+  <div id="playerOne">
+    <h1>Setting Player's Board</h1>
+    <legend>
+      <strong>Left-click</strong> - place ship<br>
+      <strong>Right-click</strong> - rotate ship
+    </legend>
+    <div class="buttons">
+      <button id="randomShip">Random next ship</button>
+      <button id="randomShipAll">Random all ships</button>
+    </div>
+    <div id="board1"></div>
+    
+    <h2>Board's array output</h2>
+    <div id="output"></div>
   </div>
-  <h2>Board's array output</h2>
-  <div id="output"></div>
+
+  <div id="playerOne">
+    <h1>Second Player's Board</h1>
+    <legend>
+      <strong>Left-click</strong> - place ship<br>
+      <strong>Right-click</strong> - rotate ship
+    </legend>
+    <div class="buttons">
+      <button>Random next ship</button>
+      <button>Random all ships</button>
+    </div>
+    <div id="board2"></div>
+  </div>
   <script src="index.js"></script>
 </body>
 </html>
