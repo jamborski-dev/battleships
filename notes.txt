@@ -23,3 +23,7 @@ Algorithm
 3. Listen for click
   3.1. If right click toggle rotation
   3.2. If left click placeship at current location
+
+
+
+!!! Checks should be done against ARRAY with a board - not HTML elements!
