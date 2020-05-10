@@ -72,40 +72,53 @@ const getRandomLocation = () => {
   }
 }
 
-// - Setting up a board ---------------------------
-// show ship to set it on board / right-click to change rotation
-const hoverShip = (event, isHover, isClick = false) => {
-  const topCells = [];
-  const leftCells = [];
-  const location = parseLocation(event);
+const checkAvailable = (cells) => {
+  isAvailable = cells.every(cell => {
+    if (getCell(cell)) {
+      isOnMap = true;
+      getCell(cell).classList.contains('ship') ? isEmpty = false : isEmpty = true;    
+    } else {
+      isOnMap = false;
+    }
 
-  // if 'rotatation' === true ship is vertical, if false horizontaly
-  // get all cells of the ship and store it in the top or left array
+    return isOnMap && isEmpty;
+  });
+}
+
+const getShip = (location, isRandom = false) => {
+  if (isRandom) rotation = Boolean(Math.floor(Math.random()) * 2);
+  const shipBody = [];
   if (rotation) {
     for (let i = 0; i < shipSize; i++) {
-      topCells[i] = getTop(location, i);
+      shipBody[i] = getTop(location, i);
     }
   } else {
     for (let i = 0; i < shipSize; i++) {
-      leftCells[i] = getLeft(location, i);
+      shipBody[i] = getLeft(location, i);
     }
   }
+  return shipBody;
+}
+
+
+// - Setting up a board ---------------------------
+// show ship to set it on board / right-click to change rotation
+const hoverShip = (event, isHover, isClick = false) => {
+  const location = parseLocation(event);
+  const shipBody = getShip(location);
 
   // check if whole ship is inside the board
-  if (topCells.length > 0) checkAvailable(topCells)
-  if (leftCells.length > 0) checkAvailable(leftCells);
+  checkAvailable(shipBody)
 
   if (isAvailable) shipState = 'ship-hover';
   else shipState = 'ship-hover-alert';
 
   if (!isClick) {
   // if either arrays is not empty select all cells and add or remove class of 'ship'
-    if (topCells) toggleHover(topCells, isHover);
-    if (leftCells) toggleHover(leftCells, isHover);
+    if (shipBody) toggleHover(shipBody, isHover);
   } else {
-    // OR place ship at this position
-    if (topCells) placeShip(topCells);
-    if (leftCells) placeShip(leftCells);
+    if (!isAvailable) return;
+    if (shipBody) placeShip(shipBody);
 
     shipSize--;
   }
@@ -122,19 +135,6 @@ const toggleHover = (cells, isHover) => {
   });
 }
 
-const checkAvailable = (cells) => {
-  isAvailable = cells.every(cell => {
-    if (getCell(cell)) {
-      isOnMap = true;
-      getCell(cell).classList.contains('ship') ? isEmpty = false : isEmpty = true;    
-    } else {
-      isOnMap = false;
-    }
-
-    return isOnMap && isEmpty;
-  });
-}
-
 const hoverOffAll = () => {
   const allHovered = document.querySelectorAll('.cell');
   allHovered.forEach(div => {
@@ -146,12 +146,33 @@ const hoverOffAll = () => {
 const placeShip = (cells) => {
   cells.forEach((cell) => {
     const div = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
-    board[cell.posX][cell.posY] = 'X ';
     if (div) div.classList.add('ship');
+
+    board[cell.posX][cell.posY] = 'X ';
   });
   printOutput();
 }
 
+const placeRandomShip = () => {
+  let isPlaced = false;
+  while (!isPlaced) {
+    const randomLocation = getRandomLocation();
+    const ship = getShip(randomLocation, true);
+    checkAvailable(ship);
+    if (isAvailable) {
+      placeShip(ship);
+      isPlaced = true;
+    }
+  } 
+  
+  shipSize--;
+}
+
+const placeRandomShipAll = () => {
+  while (shipSize > 0) {
+    placeRandomShip();
+  }
+}
 
 
 // Event Listeners & board initialisation
@@ -186,6 +207,8 @@ boardDiv.addEventListener('mousedown', event => {
 
   if (event.button === 0) { // left-click
     if (shipSize > 1) {
+
+      console.log(isAvailable);
       hoverShip(event, true, true); // 3rd arg as true will place ship at current location
     } else {
       hoverShip(event, true, true);
@@ -195,66 +218,43 @@ boardDiv.addEventListener('mousedown', event => {
 });
 
 // generate random ships on board
-const nextRandomShip = document.querySelector('#nextRandomShip');
-nextRandomShip.addEventListener('click', () => {
-  placeRandomShips();
+const randomShip = document.querySelector('#randomShip');
+randomShip.addEventListener('click', () => {
+  if (shipSize > 0) placeRandomShip();
+  else disableButtons();
 });
 
-const placeRandomShips = () => {
-  let topCells = [];
-  let leftCells = [];
-
-  do {
-    topCells = [];
-    leftCells = [];
-    const randomLocation = getRandomLocation();
-    const randomRotation = Boolean(Math.floor(Math.random() * 2));
-  
-    if (randomRotation) {
-      for (let i = 0; i < shipSize; i++) {
-        topCells[i] = getTop(randomLocation, i);
-      }
-    } else {
-      for (let i = 0; i < shipSize; i++) {
-        leftCells[i] = getLeft(randomLocation, i);
-      }
-    }
-  
-    // check if whole ship is inside the board
-    if (topCells.length > 0) checkAvailable(topCells);
-    if (leftCells.length > 0) checkAvailable(leftCells);
-
-    if (isAvailable) shipState = 'ship-hover';
-    else shipState = 'ship-hover-alert';
-
-    // OR place ship at this position
-    if (topCells) placeShip(topCells);
-    if (leftCells) placeShip(leftCells);
-
-  } while (!isAvailable); 
-
-  shipSize--;
-  
-}
+const randomShipAll = document.querySelector('#randomShipAll');
+randomShipAll.addEventListener('click', () => {
+  placeRandomShipAll();
+  disableButtons();
+});
 
 // prevent context menu to open over board
 boardDiv.addEventListener('contextmenu', event => {
   event.preventDefault();
 });
 
-
 // output board array for reference
 const outputDiv = document.querySelector('#output');
 const printOutput = () => {
-
 outputDiv.innerHTML = '';
-
   board.forEach(row => {
     row.forEach(cell => {
       outputDiv.innerHTML += cell ? `X ` : `O `;
     });
     outputDiv.innerHTML += `<br>`;
   });
+}
+
+const disableButtons = () => {
+  randomShip.classList.add('disabled');
+  randomShipAll.classList.add('disabled');
+}
+
+const enableButtons = () => {
+  randomShip.classList.remove('disabled');
+  randomShipAll.classList.remove('disabled');
 }
 
 printOutput();
