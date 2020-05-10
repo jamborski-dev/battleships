@@ -37,6 +37,7 @@ const setBoard = (root) => {
 const parseLocation = (event) => {
   const { location } = event.target.dataset;
   return {
+    board: location.split('-')[0],
     posX: parseInt(location.split('-')[1]),
     posY: parseInt(location.split('-')[2])
   }
@@ -46,6 +47,7 @@ const getTop = (currentCell, amount) => {
   if (currentCell.posX < 0) return false;
   const newTop = currentCell.posX - amount;
   return {
+    board: currentCell.board,
     posX: newTop,
     posY: currentCell.posY
   }
@@ -55,19 +57,21 @@ const getLeft = (currentCell, amount) => {
   if (currentCell.posY < 0) return false;
   const newLeft = currentCell.posY - amount;
   return {
+    board: currentCell.board,
     posX: currentCell.posX,
     posY: newLeft
   }
 }
 
 const getCell = (cell) => {
-  const selectedCell = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
+  const selectedCell = document.querySelector(`[data-location='${cell.board}-${cell.posX}-${cell.posY}']`);
   if (!selectedCell) return false;
   return selectedCell;
 }
 
 const getRandomLocation = () => {
   return {
+    board: 'board1',
     posX: Math.floor(Math.random() * boardSize),
     posY: Math.floor(Math.random() * boardSize)
   }
@@ -109,8 +113,8 @@ const hoverShip = (event, isHover, isClick = false) => {
   const shipBody = getShip(location);
 
   // check if whole ship is inside the board
-  checkAvailable(shipBody)
-
+  checkAvailable(shipBody);
+  
   if (isAvailable) shipState = 'ship-hover';
   else shipState = 'ship-hover-alert';
 
@@ -126,6 +130,7 @@ const hoverShip = (event, isHover, isClick = false) => {
 }
 
 const toggleHover = (cells, isHover) => {
+
   cells.forEach(cell => {
     const ship = getCell(cell);
     if (isHover) {
@@ -145,12 +150,16 @@ const hoverOffAll = () => {
 
 const placeShip = (cells) => {
   cells.forEach((cell) => {
-    const div = document.querySelector(`[data-location='${cell.posX}-${cell.posY}']`);
+    const div = document.querySelector(`[data-location='${cell.board}-${cell.posX}-${cell.posY}']`);
     if (div) div.classList.add('ship');
 
-    board[cell.posX][cell.posY] = 'X ';
+    if (cell.board === 'board1') {
+      playerOneBoard[cell.posX][cell.posY] = 'X ';
+    } else { 
+      playerTwoBoard[cell.posX][cell.posY] = 'X ';
+    }
   });
-  printOutput();
+  updateOutputAll();
 }
 
 const placeRandomShip = () => {
@@ -177,8 +186,6 @@ const placeRandomShipAll = () => {
 // Event Listeners & board initialisation
 // ---------------------------------------------------------
 const addEvents = (root) => {
-  console.log(`Adding events for`, root);
-
   // mouseover
   root.addEventListener('mouseover', event => {
     if (event.target !== event.currentTarget) {
@@ -220,7 +227,6 @@ const addEvents = (root) => {
   });
 }
 
-
 // select container div & init boarrd
 const boardDiv = document.querySelector("#board1");
 const playerTwoBoardDiv = document.querySelector('#board2');
@@ -228,11 +234,10 @@ setBoard(playerTwoBoardDiv);
 addEvents(playerTwoBoardDiv)
 
 setBoard(boardDiv);
-addEvents(boardDiv)
-
-
+addEvents(boardDiv);
 
 // generate random ships on board
+// buttons
 const randomShip = document.querySelector('#randomShip');
 const randomShipAll = document.querySelector('#randomShipAll');
 
@@ -256,13 +261,10 @@ const enableButtons = () => {
   randomShipAll.classList.remove('disabled');
 }
 
-
-
-
-
 // output board array for reference
-const outputDiv = document.querySelector('#output');
-const printOutput = () => {
+const playerOneOutput = document.querySelector('#output1');
+const playerTwoOutput = document.querySelector('#output2');
+const printOutput = (outputDiv, board) => {
 outputDiv.innerHTML = '';
   board.forEach(row => {
     row.forEach(cell => {
@@ -271,5 +273,13 @@ outputDiv.innerHTML = '';
     outputDiv.innerHTML += `<br>`;
   });
 }
-printOutput();
+
+const updateOutputAll = () => {
+  printOutput(playerOneOutput, playerOneBoard);
+  printOutput(playerTwoOutput, playerTwoBoard);
+}
+
+updateOutputAll();
+
+
 
