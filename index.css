@@ -23,7 +23,7 @@ body {
   grid-template-columns: 1fr 1fr;
 }
 
-#board1, #board2 {
+.board {
   border: solid 8px rgb(153, 153, 153);
   width: calc((400px * var(--board-scale, 1)) + 16px);
   height: calc((400px * var(--board-scale, 1)) + 16px);
@@ -62,16 +62,18 @@ body {
   margin-bottom: 10px;
 }
 
-.buttons button {
+button {
   background-color: rgba(10, 108, 255, 0.867);
   color: #fff;
   padding: 10px 15px;
   border: none;
   cursor: pointer;
   outline: none;
+  margin-top: 8px;
+  margin-right: 8px;
 }
 
-.buttons button.disabled {
+button.disabled {
   cursor: none;
   background-color: rgb(158, 158, 158);
   color: rgba(255, 255, 255, 0.5);
