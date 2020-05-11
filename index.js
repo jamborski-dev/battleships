@@ -6,6 +6,9 @@ let isEmpty = true;
 let isAvailable = true;
 let shipState = 'ship-hover';
 
+// setting, game, win
+let gameState = 'setting'; 
+
 // fill boards array
 const board = Array(boardSize).fill().map(() => Array(boardSize).fill(false));
 const playerOneBoard = Array(boardSize).fill().map(() => Array(boardSize).fill(false));
@@ -78,10 +81,14 @@ const getRandomLocation = () => {
 }
 
 const checkAvailable = (cells) => {
+  let board = '';
+  
   isAvailable = cells.every(cell => {
-    if (getCell(cell)) {
+    cell.board === 'board1' ? board = playerOneBoard : board = playerTwoBoard;
+    
+    if (cell.posX >= 0 && cell.posX < boardSize && cell.posY >= 0 && cell.posY < boardSize) {
       isOnMap = true;
-      getCell(cell).classList.contains('ship') ? isEmpty = false : isEmpty = true;    
+      board[cell.posX][cell.posY] === 'X ' ? isEmpty = false : isEmpty = true;
     } else {
       isOnMap = false;
     }
@@ -123,7 +130,7 @@ const hoverShip = (event, isHover, isClick = false) => {
     if (shipBody) toggleHover(shipBody, isHover);
   } else {
     if (!isAvailable) return;
-    if (shipBody) placeShip(shipBody);
+    placeShip(shipBody);
 
     shipSize--;
   }
@@ -211,8 +218,6 @@ const addEvents = (root) => {
 
     if (event.button === 0) { // left-click
       if (shipSize > 1) {
-
-        console.log(isAvailable);
         hoverShip(event, true, true); // 3rd arg as true will place ship at current location
       } else {
         hoverShip(event, true, true);
