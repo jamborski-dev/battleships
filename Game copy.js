@@ -4,59 +4,18 @@ class Game {
     this.boardSize = 10;  
     this.shipSize = 5;
     this.shipAmount = 0;
-    this.currentBoard = '';
+    this.currentBoard = 'settingBoard';
     this.rotation = true;
     this.isAvailable = true;
     this.isOnMap = true;
     this.isEmpty = true;
     this.shipState = 'ship-hover';
-
-    // this.playerOneBoard = [
-    //   [0, 0, 1, 1, 1, 1, 1, 0, 0, 0],  // 0
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
-    //   [0, 0, 1, 0, 0, 0, 0, 0, 1, 0],  // 3
-    //   [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],  // 4
-    //   [0, 0, 1, 0, 0, 1, 0, 0, 0, 0],  // 5
-    //   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  // 6
-    //   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  // 7
-    //   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 8
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
-    // ];
-
-    // this.playerTwoBoard = [
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 0
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],  // 1
-    //   [0, 0, 1, 1, 1, 0, 0, 0, 0, 0],  // 2
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 3
-    //   [0, 1, 1, 1, 1, 1, 0, 0, 0, 0],  // 4
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 5
-    //   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
-    //   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
-    //   [0, 0, 0, 0, 1, 1, 1, 1, 0, 0],  // 8
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
-    // ];
-    
-    // this.scoreBoard = [
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 0
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 3
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 4
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 5
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 8
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
-    // ];
-
     this.playerOneBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
     this.playerTwoBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
     this.scoreBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
     // setView('start') off for dev
-    this.setView('setting');
-    // this.startGame();
-    this.createGame();
+    this.setView('start');
+    // this.createGame();
   }
 
   setView(setting) {
@@ -82,7 +41,7 @@ class Game {
         `;
 
         const settingBoard = document.createElement('div');
-        settingBoard.id = 'player';
+        settingBoard.id = 'settingBoard';
         settingBoard.classList.add('board');
 
         // buttons
@@ -125,7 +84,7 @@ class Game {
         left.innerHTML = `<h1>Let's play!</h1>`;
 
         const playerBoard = document.createElement('div');
-        playerBoard.id = 'player';
+        playerBoard.id = 'playerOneBoard';
         playerBoard.classList.add('board');
 
         left.appendChild(playerBoard);
@@ -135,7 +94,7 @@ class Game {
         right.innerHTML = `<h1>Target opponent's fleet here</h1>`;
 
         const targetBoard = document.createElement('div');
-        targetBoard.id = 'target';
+        targetBoard.id = 'targetBoard';
         targetBoard.classList.add('board');
 
         right.appendChild(targetBoard);
@@ -156,29 +115,17 @@ class Game {
 
   createGame() {
     this.setView('setting');
-    this.setBoardFor('player'); 
-  }
+    this.setBoardFor('ai');
+    this.setBoardFor('player');
 
-  drawBoard (board) {
-    const root = document.querySelector(`#${board}`);
-    let targetContent = []
-    if (board === 'player') targetContent = this.playerOneBoard;
-    if (board === 'target') targetContent = this.scoreBoard;
-    
-    targetContent.forEach((arr, i) => {
-      const row = document.createElement('div');
-      row.classList.add('row');
-
-      arr.forEach((item, j) => {
-        const cell = document.createElement('div');
-        cell.classList.add('cell');
-        if (item === 1) cell.classList.add('ship');
-
-        cell.setAttribute("data-location", `${board}-${i}-${j}`);       
-        row.appendChild(cell);
-      });
-      root.appendChild(row);
-    });
+    // 2. Show board setting screen for the player
+    //    1. Board
+    //    2. 'Random ships' button
+    //    3. 'Clear board' button
+    //    4. 'Undo' button
+    // 3. Randomly set AI's board
+    // 4. Show 'Start game' button with action to:
+    //    Game.startGame()
   }
 
   setBoardFor(player) {
@@ -191,25 +138,45 @@ class Game {
       this.enableButton('randomShipAll');
       this.disableButton('startGame');
 
-      this.drawBoard('player');
+      // draw new empty board to the screen
+      const board = document.querySelector('#settingBoard');
+      this.drawBoard(board);
 
       // enable Events setEvents(rootElement, isGame);
-      this.setEvents('player', false);
-    } 
-    
-    if (player === 'ai') {
+      this.setEvents(board, false);
+    } else if (player === 'ai') {
       // init new board
       this.shipSize = 5;
       this.shipAmount = 0;
       this.randomShipAll();
+      console.log(this.playerOneBoard);
+      console.log(this.playerTwoBoard);
     }
   }
 
-  setEvents(board, isGame) {
-    const root = document.querySelector(`#${board}`);
+  drawBoard (root, board) {
+    for (let i = 0; i < this.boardSize; i++) {
+      // create rows
+      const row = document.createElement("div");
+      row.classList.add("row");
+  
+      for (let j = 0; j < this.boardSize; j++) {
+        // create columns
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+  
+        // set location for each cell
+        // data-location attr in HTML elements
+        cell.setAttribute("data-location", `${root.id}-${i}-${j}`);
+        row.appendChild(cell);
+      }
+      root.appendChild(row);
+    }
+  }
 
+  setEvents(root, isGame) {
     root.addEventListener('mouseover', event => {
-      if (event.target !== event.currentTarget) { 
+      if (event.target !== event.currentTarget) {
         // hover ship on
         const location = this.parseLocation(event);
         const ship = this.getShip(location);
@@ -284,7 +251,7 @@ class Game {
       const div = document.querySelector(`[data-location='${segment.board}-${segment.posX}-${segment.posY}']`);
       if (div) div.classList.add('ship');
   
-      if (segment.board === 'player') {
+      if (segment.board === 'settingBoard') {
         this.playerOneBoard[segment.posX][segment.posY] = 1;
       } else if (segment.board === 'ai') {
         this.playerTwoBoard[segment.posX][segment.posY] = 1;
@@ -334,8 +301,18 @@ class Game {
   startGame() {
     this.setView('game');
 
-    this.drawBoard('player');
+    this.drawBoard('player', this.playerOneBoard);
     this.drawBoard('target');
+
+    // this.drawBoard('');
+
+    // 1. Show player's fleet
+    // 2. Show targeting board
+    // 3. Start round (loop until WIN)
+    //    1. Fire players torpedo
+    //    2. Update targeting board
+    //    3. Check if WIN
+    //    4. Switch players (Player => AI || AI => Player)
   }
 
   win() {}
@@ -415,7 +392,7 @@ class Game {
     let board = '';
     
     this.isAvailable = cells.every(cell => {
-      cell.board === 'player' ? board = this.playerOneBoard : board = this.playerTwoBoard;
+      cell.board === 'settingBoard' ? board = this.playerOneBoard : board = this.playerTwoBoard;
       
       if (cell.posX >= 0 && cell.posX < this.boardSize && cell.posY >= 0 && cell.posY < this.boardSize) {
         this.isOnMap = true;

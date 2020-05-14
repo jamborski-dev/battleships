@@ -1,29 +1,50 @@
-Placing ships on the board
-  - update board array, than update players board
+craeteGame () {
+  initBoard('player')
+  initBoard('ai')
 
-Randomly generate ships for the opposite player
+  creates two variables with empty 2-dimensional arrays filled with 0
 
-Create method to launch torpedos
+  setBoard('player')
+    drawBoard('player') 
+    addEvents('player')
+      onHover: (mouseover, mouseout)
+        checkAvailable(location)
+        hover(location, true) || hover(location, false)
+      onClick:
+        placeShip(location) // only on array
+      
+  setBoard('ai')
+    randomShipAll('ai')
 
-Create AI for single player mode
+  randomShipAll(target)
+    getRandomLocation
+    getRandomRotation
+}
 
+startGame() {
+  playerOneBoard[][]
+  playerTwoBoard[][]
 
-Algorithm
+  drawBoard('player')
+  drawBoard('score')
 
-1. Listen for mouseover
-  Before:
-  check rotation
-  check isInBounds
-  check isClick
-  1.1. Show ship with class 'hover'
+  checkIfWin() // checks if any of the arrays still has value 1 (use of some() array method)
+  round()
+}
 
-2. Listen for mouseout
-  2.1. Remove 'hover' class from ship at 1.1
+drawBoard(type)
+  player:
+    select div #playerOneBoard
+    draw content of playerOneBoard array to selected div with each cell attr @data-location=${type}-X-Y
 
-3. Listen for click
-  3.1. If right click toggle rotation
-  3.2. If left click placeship at current location
+  score:
+    select div #targetBoard
+    draw empty board with each cell attr @data-location=${score}-X-Y
 
-
-
-!!! Checks should be done against ARRAY with a board - not HTML elements!
+updateBoard(board)
+  player:
+    select div #playerOneBoard
+    update content of playerOneBoard array to selected div
+      if field === 1, add .ship class to location with this index
+      if field === 2, add .hit class to location with this index
+      if field === 3, add .miss class to location with this index
