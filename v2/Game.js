@@ -19,51 +19,51 @@ class Game {
     this.currentLocation = {};
     this.missileLog = [];
 
-    this.playerOneBoard = [
-      [0, 0, 1, 1, 1, 1, 1, 0, 0, 0],  // 0
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
-      [0, 0, 1, 0, 0, 0, 0, 0, 1, 0],  // 3
-      [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],  // 4
-      [0, 0, 1, 0, 0, 1, 0, 0, 0, 0],  // 5
-      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  // 6
-      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  // 7
-      [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 8
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
-    ];
+    // this.playerOneBoard = [
+    //   [0, 0, 1, 1, 1, 1, 1, 0, 0, 0],  // 0
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
+    //   [0, 0, 1, 0, 0, 0, 0, 0, 1, 0],  // 3
+    //   [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],  // 4
+    //   [0, 0, 1, 0, 0, 1, 0, 0, 0, 0],  // 5
+    //   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  // 6
+    //   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  // 7
+    //   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 8
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
+    // ];
 
-    this.playerTwoBoard = [
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 0
-      [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],  // 1
-      [0, 0, 1, 1, 1, 0, 0, 0, 0, 0],  // 2
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 3
-      [0, 1, 1, 1, 1, 1, 0, 0, 0, 0],  // 4
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 5
-      [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
-      [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
-      [0, 0, 0, 0, 1, 1, 1, 1, 0, 0],  // 8
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
-    ];
+    // this.playerTwoBoard = [
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 0
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],  // 1
+    //   [0, 0, 1, 1, 1, 0, 0, 0, 0, 0],  // 2
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 3
+    //   [0, 1, 1, 1, 1, 1, 0, 0, 0, 0],  // 4
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 5
+    //   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
+    //   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
+    //   [0, 0, 0, 0, 1, 1, 1, 1, 0, 0],  // 8
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
+    // ];
     
-    this.scoreBoard = [
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 0
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 3
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 4
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 5
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 8
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
-    ];
+    // this.scoreBoard = [
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 0
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 3
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 4
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 5
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 8
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
+    // ];
 
-    // this.playerOneBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
-    // this.playerTwoBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
-    // this.scoreBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
+    this.playerOneBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
+    this.playerTwoBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
+    this.scoreBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
     // setView('start') off for dev
-    this.setView('game');
-    this.startGame();
+    this.setView('start');
+    // this.startGame();
     // this.createGame(); 
   }
 
@@ -169,6 +169,7 @@ class Game {
 
   createGame() {
     this.setView('setting');
+    this.setBoardFor('ai');
     this.setBoardFor('player'); 
   }
 
@@ -244,21 +245,23 @@ class Game {
 
     root.addEventListener('mousedown', event => {
       // LEFT-CLICK
-      if (event.button === 0) {
-        if (!isGame) {
-          // get location
-          const location = this.parseLocation(event);
-          const ship = this.getShip(location);
-          this.checkAvailable(ship);
-          if (this.isAvailable && this.shipAmount <= 5) this.placeShip(ship);
-        } 
-
-        if (isGame && this.currentPlayer === 'player' && this.canFire) {
-          this.canFire = false;
-          this.currentLocation = this.parseLocation(event);
-          this.fireTorpedo();
-        }
-      }  
+      if (event.target !== event.currentTarget) {
+        if (event.button === 0) {
+          if (!isGame) {
+            // get location
+            const location = this.parseLocation(event);
+            const ship = this.getShip(location);
+            this.checkAvailable(ship);
+            if (this.isAvailable && this.shipAmount <= 5) this.placeShip(ship);
+          } 
+  
+          if (isGame && this.currentPlayer === 'player' && this.canFire) {
+            this.canFire = false;
+            this.currentLocation = this.parseLocation(event);
+            this.fireTorpedo();
+          }
+        }  
+      }
 
       // RIGHT-CLICK - vertical/horizontal ship
       if (!isGame) {
