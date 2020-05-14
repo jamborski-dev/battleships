@@ -11,52 +11,60 @@ class Game {
     this.isEmpty = true;
     this.shipState = 'ship-hover';
 
-    // this.playerOneBoard = [
-    //   [0, 0, 1, 1, 1, 1, 1, 0, 0, 0],  // 0
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
-    //   [0, 0, 1, 0, 0, 0, 0, 0, 1, 0],  // 3
-    //   [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],  // 4
-    //   [0, 0, 1, 0, 0, 1, 0, 0, 0, 0],  // 5
-    //   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  // 6
-    //   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  // 7
-    //   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 8
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
-    // ];
+    this.roundCount = 0;
+    this.isWin = false;
+    this.isFired = false;
+    this.canFire = true;
+    this.randomLocation = {}
+    this.currentLocation = {};
+    this.missileLog = [];
 
-    // this.playerTwoBoard = [
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 0
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],  // 1
-    //   [0, 0, 1, 1, 1, 0, 0, 0, 0, 0],  // 2
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 3
-    //   [0, 1, 1, 1, 1, 1, 0, 0, 0, 0],  // 4
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 5
-    //   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
-    //   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
-    //   [0, 0, 0, 0, 1, 1, 1, 1, 0, 0],  // 8
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
-    // ];
+    this.playerOneBoard = [
+      [0, 0, 1, 1, 1, 1, 1, 0, 0, 0],  // 0
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
+      [0, 0, 1, 0, 0, 0, 0, 0, 1, 0],  // 3
+      [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],  // 4
+      [0, 0, 1, 0, 0, 1, 0, 0, 0, 0],  // 5
+      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  // 6
+      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  // 7
+      [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 8
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
+    ];
+
+    this.playerTwoBoard = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 0
+      [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],  // 1
+      [0, 0, 1, 1, 1, 0, 0, 0, 0, 0],  // 2
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 3
+      [0, 1, 1, 1, 1, 1, 0, 0, 0, 0],  // 4
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 5
+      [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
+      [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
+      [0, 0, 0, 0, 1, 1, 1, 1, 0, 0],  // 8
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
+    ];
     
-    // this.scoreBoard = [
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 0
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 3
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 4
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 5
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 8
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
-    // ];
+    this.scoreBoard = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 0
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 3
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 4
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 5
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 8
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
+    ];
 
-    this.playerOneBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
-    this.playerTwoBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
-    this.scoreBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
+    // this.playerOneBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
+    // this.playerTwoBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
+    // this.scoreBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
     // setView('start') off for dev
-    this.setView('setting');
-    // this.startGame();
-    this.createGame();
+    this.setView('game');
+    this.startGame();
+    // this.createGame(); 
   }
 
   setView(setting) {
@@ -122,23 +130,28 @@ class Game {
 
         // LEFT
         const left = document.createElement('div');
-        left.innerHTML = `<h1>Let's play!</h1>`;
+        left.innerHTML = `
+          <div id="game-text">
+            <h1>Prepare for battle!</h1>
+          </div>
+          <h3>Target opponent's fleet here</h3>
+        `;
 
-        const playerBoard = document.createElement('div');
-        playerBoard.id = 'player';
-        playerBoard.classList.add('board');
+        const leftBoard = document.createElement('div');
+        leftBoard.id = 'score';
+        leftBoard.classList.add('board', 'score');
 
-        left.appendChild(playerBoard);
+        left.appendChild(leftBoard);
 
         // RIGHT
         const right = document.createElement('div');
-        right.innerHTML = `<h1>Target opponent's fleet here</h1>`;
+        right.innerHTML = `<h3>Your fleet</h3>`;
 
-        const targetBoard = document.createElement('div');
-        targetBoard.id = 'target';
-        targetBoard.classList.add('board');
+        const rightBoard = document.createElement('div');
+        rightBoard.id = 'player';
+        rightBoard.classList.add('board');
 
-        right.appendChild(targetBoard);
+        right.appendChild(rightBoard);
 
         section.appendChild(left);
         section.appendChild(right);
@@ -159,13 +172,13 @@ class Game {
     this.setBoardFor('player'); 
   }
 
-  drawBoard (board) {
+  drawBoard(board) {
     const root = document.querySelector(`#${board}`);
-    let targetContent = []
-    if (board === 'player') targetContent = this.playerOneBoard;
-    if (board === 'target') targetContent = this.scoreBoard;
-    
-    targetContent.forEach((arr, i) => {
+    let targetArray = []
+    if (board === 'player') targetArray = this.playerOneBoard;
+    if (board === 'score') targetArray = this.scoreBoard;
+
+    targetArray.forEach((arr, i) => {
       const row = document.createElement('div');
       row.classList.add('row');
 
@@ -208,48 +221,59 @@ class Game {
   setEvents(board, isGame) {
     const root = document.querySelector(`#${board}`);
 
-    root.addEventListener('mouseover', event => {
-      if (event.target !== event.currentTarget) { 
-        // hover ship on
-        const location = this.parseLocation(event);
-        const ship = this.getShip(location);
-        this.checkAvailable(ship);
-        this.hover(ship, true);
-    }});
+    if (!isGame) {
+      root.addEventListener('mouseover', event => {
+        if (event.target !== event.currentTarget) { 
+          const location = this.parseLocation(event);
+          const ship = this.getShip(location);
+          this.checkAvailable(ship);
+          this.hover(ship, true);
+      }});
+    }
 
     root.addEventListener('mouseout', event => {
-      if (event.target !== event.currentTarget) {
-        // hover ship off
-        const location = this.parseLocation(event);
-        const ship = this.getShip(location);
-        this.hover(ship, false);
+      if (!isGame) {
+        if (event.target !== event.currentTarget) {
+          // hover ship off
+          const location = this.parseLocation(event);
+          const ship = this.getShip(location);
+          this.hover(ship, false);
+        }
       }
     });
 
     root.addEventListener('mousedown', event => {
       // LEFT-CLICK
       if (event.button === 0) {
-        // get location
-        const location = this.parseLocation(event);
-        const ship = this.getShip(location);
-        this.checkAvailable(ship);
-        if (this.isAvailable && this.shipAmount <= 5) this.placeShip(ship);
-        // console.log('Ships amount', this.shipAmount);
-        // console.log('Ships size', this.shipSize);
+        if (!isGame) {
+          // get location
+          const location = this.parseLocation(event);
+          const ship = this.getShip(location);
+          this.checkAvailable(ship);
+          if (this.isAvailable && this.shipAmount <= 5) this.placeShip(ship);
+        } 
+
+        if (isGame && this.currentPlayer === 'player' && this.canFire) {
+          this.canFire = false;
+          this.currentLocation = this.parseLocation(event);
+          this.fireTorpedo();
+        }
       }  
 
       // RIGHT-CLICK - vertical/horizontal ship
-      if (event.button === 2) {
-        // hover off current cells & toggle value of rotation
-        const allHovered = document.querySelectorAll('.cell');
-        allHovered.forEach(div => {
-          div.classList.remove('ship-hover', 'ship-hover-alert');
-        });
-        this.rotation === true ? this.rotation = false : this.rotation = true;
-        const location = this.parseLocation(event);
-        const ship = this.getShip(location);
-        this.checkAvailable(ship);
-        this.hover(ship, true);
+      if (!isGame) {
+        if (event.button === 2) {
+          // hover off current cells & toggle value of rotation
+          const allHovered = document.querySelectorAll('.cell');
+          allHovered.forEach(div => {
+            div.classList.remove('ship-hover', 'ship-hover-alert');
+          });
+          this.rotation === true ? this.rotation = false : this.rotation = true;
+          const location = this.parseLocation(event);
+          const ship = this.getShip(location);
+          this.checkAvailable(ship);
+          this.hover(ship, true);
+        }
       }
     });
 
@@ -259,16 +283,16 @@ class Game {
     });
   }
 
-  // Fleet setting functions;
+  // Fleet setting functions
 
-  hover (shipBody, isHover) {
+  hover(shipBody, isHover) {
     if (this.isAvailable) this.shipState = 'ship-hover';
     else this.shipState = 'ship-hover-alert';
   
     if (shipBody) this.toggleHover(shipBody, isHover);
   }
 
-  toggleHover (cells, isHover) {
+  toggleHover(cells, isHover) {
     cells.forEach(cell => {
       const selectedCell = this.selectCell(cell);
       if (isHover) {
@@ -279,7 +303,7 @@ class Game {
     });
   }
 
-  placeShip (ship) {
+  placeShip(ship) {
     ship.forEach(segment => {
       const div = document.querySelector(`[data-location='${segment.board}-${segment.posX}-${segment.posY}']`);
       if (div) div.classList.add('ship');
@@ -301,7 +325,7 @@ class Game {
     };
   }
 
-  randomShip () {
+  randomShip() {
     let isPlaced = false;
     while (!isPlaced) {
       this.getRandomLocation();
@@ -315,13 +339,13 @@ class Game {
     
   }
 
-  randomShipAll () {
+  randomShipAll() {
     while (this.shipSize > 0) {
       this.randomShip();
     }
   }
 
-  getRandomLocation () {
+  getRandomLocation() {
     this.randomLocation = {
       board: this.currentBoard,
       posX: Math.floor(Math.random() * this.boardSize),
@@ -335,13 +359,129 @@ class Game {
     this.setView('game');
 
     this.drawBoard('player');
-    this.drawBoard('target');
+    this.drawBoard('score');
+    this.setEvents('score', true);
+    this.gameText = document.querySelector('#game-text');
+    this.round();
   }
 
-  win() {}
+  async round() {
+    // init round count
+    this.roundCount++  
+
+    // player turn
+    this.currentPlayer = 'player';
+    this.canFire = true;
+    let delay = 500;
+    if (this.roundCount === 1) {
+      delay = 2000;
+    } else {
+      delay = 500;
+    } 
+
+    setTimeout(() => {
+      this.gameText.innerHTML = `<h1>Round ${this.roundCount}<h1>`;
+      this.gameText.innerHTML += `<h2>Your turn!</h2>`;
+    }, delay);
+
+    await this.turn();
+
+    // AI turn
+    this.currentPlayer = 'ai';
+    this.canFire = true;
+    this.gameText.innerHTML = `<h1>Round ${this.roundCount}<h1>`;
+    this.gameText.innerHTML += `<h2>Wait for opponent's turn...</h2>`;
+    await this.turn();
+
+    // start next round
+    // setTimeout(() => this.round(), 500);
+    this.round();
+  }
+
+  turn() {
+    this.isFired = false;
+    if (this.currentPlayer === 'ai' && this.canFire === true) this.fireTorpedo();
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        if (this.isFired) {
+          clearInterval(interval);
+          resolve(true);
+        };
+      }, 100);
+    });   
+  }
+
+  fireTorpedo() {
+    let location = {};
+    if (this.currentPlayer === 'player') {
+      this.currentBoard = 'score';
+      location = this.currentLocation;
+      const cell = this.selectCell(location);
+      
+      if (this.playerTwoBoard[location.posX][location.posY] === 1) {
+          this.playerTwoBoard[location.posX][location.posY] = 2;
+          cell.classList.add('hit');
+      } else {
+          this.playerTwoBoard[location.posX][location.posY] = 3;
+          cell.classList.add('miss');
+      }
+      setTimeout(() => this.isFired = true, 1000);
+    }
+
+    if (this.currentPlayer === 'ai') {
+      let validLocation = false;
+      this.currentBoard = 'player';
+
+      while(!validLocation) {
+        this.getRandomLocation();
+        location = this.randomLocation;
+        console.log(location);
+
+        // check if location has been targeted yet
+        if (false) {
+          validLocation = false;
+        } else {
+          validLocation = true;
+        }
+      };
+
+      let cell = this.selectCell(location);
+      
+      // 0 - empty space
+      // 1 - ship
+      // 2 - hit
+      // 3 - miss
+
+      // make pause for AI to 'make move'
+      setTimeout(() => {
+        if (this.playerOneBoard[location.posX][location.posY] === 1) {
+          this.playerOneBoard[location.posX][location.posY] = 2;
+          cell.classList.add('hit');
+          this.isHit = true;
+        } else {
+          this.playerOneBoard[location.posX][location.posY] = 3;
+          cell.classList.add('miss');
+        }        
+        this.missileLog.push(location);
+        this.canFire = false;
+        this.isFired = true;
+        // setTimeout(() => this.isFired = true, 2000);
+      }, 2000);
+    }
+  }
+
+  checkIsWin() {
+    if (this.isWin) {
+      // check array of current player if has any more ship segments 
+    }
+  }
+
+  win() {
+    console.log(`${this.currentPlayer} won!`);
+  }
 
   // helper functions
-  newButton (name, desc, style) {
+  newButton(name, desc, style) {
     const button = document.createElement('button');
     if (style) button.classList.add(style);
     button.id = name;
@@ -349,19 +489,19 @@ class Game {
     return button;
   }
 
-  enableButton (name) {
+  enableButton(name) {
     const button = document.querySelector(`#${name}`);
     button.disabled = false;
     button.classList.remove('disabled');
   }
 
-  disableButton (name) {
+  disableButton(name) {
     const button = document.querySelector(`#${name}`);
     button.disabled = true;
     button.classList.add('disabled');
   }
 
-  parseLocation (event) {
+  parseLocation(event) {
     const { location } = event.target.dataset;
     return {
       board: location.split('-')[0],
@@ -370,7 +510,7 @@ class Game {
     }
   }
 
-  getShip (location, isRandom = false) {
+  getShip(location, isRandom = false) {
     if (isRandom) this.rotation = Boolean(Math.floor(Math.random() * 2));
     const shipBody = [];
     if (this.rotation) { // vertical
@@ -385,7 +525,7 @@ class Game {
     return shipBody;
   }
 
-  getTop (currentCell, amount) {
+  getTop(currentCell, amount) {
     if (currentCell.posX < 0) return false;
     const newTop = currentCell.posX - amount;
     return {
@@ -395,7 +535,7 @@ class Game {
     }
   }
   
-  getLeft (currentCell, amount) {
+  getLeft(currentCell, amount) {
     if (currentCell.posY < 0) return false;
     const newLeft = currentCell.posY - amount;
     return {
@@ -405,13 +545,13 @@ class Game {
     }
   }
 
-  selectCell (cell) {
+  selectCell(cell) {
     const selectedCell = document.querySelector(`[data-location='${cell.board}-${cell.posX}-${cell.posY}']`);
     if (!selectedCell) return false;
     return selectedCell;
   }
 
-  checkAvailable (cells) {
+  checkAvailable(cells) {
     let board = '';
     
     this.isAvailable = cells.every(cell => {

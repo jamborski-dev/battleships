@@ -22,14 +22,25 @@ craeteGame () {
 }
 
 startGame() {
-  playerOneBoard[][]
-  playerTwoBoard[][]
-
   drawBoard('player')
-  drawBoard('score')
 
-  checkIfWin() // checks if any of the arrays still has value 1 (use of some() array method)
-  round()
+  drawBoard('score')
+  addEvents('score')
+
+  while (win = false)
+
+    Set currentPlayer to 'player'
+
+    Listen to click on score board
+  
+    Than fireTorpedo(location)
+
+    checkIfWin() // checks if any of the arrays still has value 1 (use of some() array method)
+
+    Set currentPlayer to 'ai'
+
+    pick random location at player's board
+
 }
 
 drawBoard(type)
@@ -41,10 +52,17 @@ drawBoard(type)
     select div #targetBoard
     draw empty board with each cell attr @data-location=${score}-X-Y
 
-updateBoard(board)
-  player:
-    select div #playerOneBoard
-    update content of playerOneBoard array to selected div
-      if field === 1, add .ship class to location with this index
-      if field === 2, add .hit class to location with this index
-      if field === 3, add .miss class to location with this index
+
+fireTorpedo(location)
+
+  if value at location === 0
+      update(location, 'miss')
+  if value at location === 1
+      update(location, 'hit')
+      
+  
+update(location, type)
+
+  
+
+      

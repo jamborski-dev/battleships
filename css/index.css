@@ -10,6 +10,7 @@
 h1 {
   margin-top: 20px;
   margin-bottom: 8px;
+  color: rgb(46, 46, 46);
 }
 
 h1 + legend {
@@ -18,13 +19,21 @@ h1 + legend {
   color: rgb(207, 124, 0);
 }
 
-body {
-  
+h2 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: -20px;
+  color: rgb(175, 149, 0);
+}
+
+h3 {
+  font-size: 14px;
+  color: rgb(117, 117, 117);
 }
 
 .game-view {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
 }
 
 .board {
@@ -36,6 +45,17 @@ body {
   margin: auto;
 }
 
+.board.score > .row > .cell:hover {
+  background-color: rgb(107, 107, 107);
+}
+
+.board.score > .row > .cell:hover::after {
+  content: "X";
+  color: #fff;
+  position: absolute;
+  padding: 7px 10px;
+}
+
 .row {
   display: flex;
   width: calc(400px * var(--board-scale, 1));
@@ -45,9 +65,34 @@ body {
 .cell {
   width: calc(40px * var(--board-scale, 1));
   height: calc(40px * var(--board-scale, 1));
+  position: relative;
   display: inline-block;
   margin: 0px;
   border: 1px solid rgb(0, 0, 0);
+}
+
+.cell.miss {
+  background-color: rgb(184, 16, 16);  
+  color: #fff;
+  pointer-events: none;
+}
+.cell.miss::after {
+  content: "M";
+  position: absolute;
+  padding-top: 7px;
+  padding-left: 8px;
+}
+
+.cell.hit {
+  background-color: rgb(43, 153, 0);
+  color: #fff;
+  pointer-events: none;
+}
+.cell.hit::after {
+  content: "H";
+  position: absolute;
+  padding-top: 7px;
+  padding-left: 10px;
 }
 
 .ship-hover {
