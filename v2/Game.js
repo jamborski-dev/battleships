@@ -12,13 +12,14 @@ class Game {
     this.shipState = 'ship-hover';
 
     this.roundCount = 0;
-    this.isWin = false;
     this.isFired = false;
     this.canFire = true;
     this.randomLocation = {}
     this.currentLocation = {};
     this.missileLog = [];
 
+    // TEST BOARDS
+    // example default board
     // this.playerOneBoard = [
     //   [0, 0, 1, 1, 1, 1, 1, 0, 0, 0],  // 0
     //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
@@ -32,15 +33,29 @@ class Game {
     //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
     // ];
 
+    // win check
+    // this.playerOneBoard = [
+    //   [3, 3, 2, 2, 2, 1, 2, 3, 3, 3],  // 0
+    //   [3, 3, 3, 3, 3, 3, 3, 3, 3, 3],  // 1
+    //   [3, 3, 3, 3, 3, 3, 3, 3, 3, 3],  // 2
+    //   [3, 3, 2, 3, 3, 3, 3, 3, 2, 3],  // 3
+    //   [3, 3, 2, 3, 3, 2, 3, 3, 2, 3],  // 4
+    //   [3, 3, 2, 3, 3, 2, 3, 3, 3, 3],  // 5
+    //   [3, 3, 3, 3, 3, 2, 3, 3, 3, 3],  // 6
+    //   [3, 3, 3, 3, 3, 2, 3, 3, 3, 3],  // 7
+    //   [3, 2, 3, 3, 3, 3, 3, 3, 3, 3],  // 8
+    //   [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]  // 9
+    // ];
+
     // this.playerTwoBoard = [
     //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 0
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],  // 1
-    //   [0, 0, 1, 1, 1, 0, 0, 0, 0, 0],  // 2
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
     //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 3
-    //   [0, 1, 1, 1, 1, 1, 0, 0, 0, 0],  // 4
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 4
     //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 5
-    //   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
-    //   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
     //   [0, 0, 0, 0, 1, 1, 1, 1, 0, 0],  // 8
     //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
     // ];
@@ -57,14 +72,9 @@ class Game {
     //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 8
     //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
     // ];
-
-    this.playerOneBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
-    this.playerTwoBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
-    this.scoreBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
     // setView('start') off for dev
     this.setView('start');
     // this.startGame();
-    // this.createGame(); 
   }
 
   setView(setting) {
@@ -75,7 +85,7 @@ class Game {
         const startGameButton = document.createElement('button');
         startGameButton.innerHTML = 'Start new game';
         startGameButton.addEventListener('click', () => {
-          this.createGame();
+          this.createNewGame();
         });
         view.appendChild(startGameButton);
         break;
@@ -167,8 +177,16 @@ class Game {
     this.root.appendChild(view);
   }
 
-  createGame() {
+  createNewGame() {
     this.setView('setting');
+    this.roundCount = 0;
+
+    // init empty arrays to store boards, randomize opponent's board, enable setting player's board
+    this.isWin = false;
+    
+    this.playerOneBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
+    this.playerTwoBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
+    this.scoreBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
     this.setBoardFor('ai');
     this.setBoardFor('player'); 
   }
@@ -187,6 +205,8 @@ class Game {
         const cell = document.createElement('div');
         cell.classList.add('cell');
         if (item === 1) cell.classList.add('ship');
+        if (item === 2) cell.classList.add('hit');
+        if (item === 3) cell.classList.add('miss');
 
         cell.setAttribute("data-location", `${board}-${i}-${j}`);       
         row.appendChild(cell);
@@ -259,6 +279,8 @@ class Game {
             this.canFire = false;
             this.currentLocation = this.parseLocation(event);
             this.fireTorpedo();
+            this.activeBoard.classList.add('wait');
+
           }
         }  
       }
@@ -365,12 +387,15 @@ class Game {
     this.drawBoard('score');
     this.setEvents('score', true);
     this.gameText = document.querySelector('#game-text');
+    this.activeBoard = document.querySelector('#score');
     this.round();
   }
 
   async round() {
     // init round count
     this.roundCount++  
+
+    this.activeBoard.classList.add('wait');
 
     // player turn
     this.currentPlayer = 'player';
@@ -382,22 +407,44 @@ class Game {
       delay = 500;
     } 
 
+    // change heading content to:
+    // 1st round - wait 2s than show first round count
+    // 2nd round+ - wait .5s than show next round count
     setTimeout(() => {
       this.gameText.innerHTML = `<h1>Round ${this.roundCount}<h1>`;
       this.gameText.innerHTML += `<h2>Your turn!</h2>`;
+      this.activeBoard.classList.remove('wait');
+
     }, delay);
 
+    // wait for player's move
     await this.turn();
+
+    // check win
+    this.checkIsWin();
+    if (this.isWin) {
+      this.win();
+      return;
+    }
 
     // AI turn
     this.currentPlayer = 'ai';
     this.canFire = true;
     this.gameText.innerHTML = `<h1>Round ${this.roundCount}<h1>`;
     this.gameText.innerHTML += `<h2>Wait for opponent's turn...</h2>`;
+
+
+    // wait for player's move
     await this.turn();
 
-    // start next round
-    // setTimeout(() => this.round(), 500);
+    // check win
+    this.checkIsWin();
+    if (this.isWin) {
+      this.win();
+      return;
+    }
+
+    // start new round if no win
     this.round();
   }
 
@@ -435,21 +482,17 @@ class Game {
       let validLocation = false;
       this.currentBoard = 'player';
 
-      while(!validLocation) {
+      while (!validLocation) {
         this.getRandomLocation();
         location = this.randomLocation;
-        console.log(location);
-
-        // check if location has been targeted yet
-        if (false) {
-          validLocation = false;
-        } else {
-          validLocation = true;
-        }
-      };
-
-      let cell = this.selectCell(location);
+        if (this.playerOneBoard[location.posX][location.posY] === 0) validLocation = true;
+        if (this.playerOneBoard[location.posX][location.posY] === 1) validLocation = true;
+        if (this.playerOneBoard[location.posX][location.posY] === 2) validLocation = false;
+        if (this.playerOneBoard[location.posX][location.posY] === 3) validLocation = false;
+      }
       
+      let cell = this.selectCell(location);
+
       // 0 - empty space
       // 1 - ship
       // 2 - hit
@@ -474,13 +517,34 @@ class Game {
   }
 
   checkIsWin() {
-    if (this.isWin) {
-      // check array of current player if has any more ship segments 
+    let shipsLeft = 0;
+    if (this.currentPlayer === 'player') {
+      // const score = this.playerTwoBoard.filter(cell => cell === 2).reduce();
+      for (let i = 0; i < this.boardSize; i++) {
+        for (let j = 0; j < this.boardSize; j++) {
+          if (this.playerTwoBoard[i][j] === 1) shipsLeft++;
+        }
+      }
     }
+
+    if (this.currentPlayer === 'ai') {
+      // const score = this.playerTwoBoard.filter(cell => cell === 2).reduce();
+      for (let i = 0; i < this.boardSize; i++) {
+        for (let j = 0; j < this.boardSize; j++) {
+          if (this.playerOneBoard[i][j] === 1) shipsLeft++;
+        }
+      }
+    }
+
+    if (shipsLeft === 0) this.isWin = true;
   }
 
   win() {
-    console.log(`${this.currentPlayer} won!`);
+    let winner = this.currentPlayer === 'player' ? 'You' : 'Opponent'
+    this.gameText.innerHTML = `<h1>${winner} won the battle!<h1>`;
+    const bTryAgain = this.newButton('tryAgain', 'Try again..');
+    bTryAgain.addEventListener('click', () => this.createNewGame());
+    this.gameText.appendChild(bTryAgain);
   }
 
   // helper functions

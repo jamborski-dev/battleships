@@ -45,6 +45,10 @@ h3 {
   margin: auto;
 }
 
+.wait {
+  pointer-events: none;
+}
+
 .board.score > .row > .cell:hover {
   background-color: rgb(107, 107, 107);
 }
