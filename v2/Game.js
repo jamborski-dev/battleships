@@ -1,7 +1,7 @@
 class Game {
   constructor(root) {
     this.root = root;
-    this.boardSize = 10;  
+    this.boardSize = 10;
     this.shipSize = 5;
     this.shipAmount = 0;
     this.currentBoard = '';
@@ -14,7 +14,7 @@ class Game {
     this.roundCount = 0;
     this.isFired = false;
     this.canFire = true;
-    this.randomLocation = {}
+    this.randomLocation = {};
     this.currentLocation = {};
     this.missileLog = [];
 
@@ -33,45 +33,6 @@ class Game {
     //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
     // ];
 
-    // win check
-    // this.playerOneBoard = [
-    //   [3, 3, 2, 2, 2, 1, 2, 3, 3, 3],  // 0
-    //   [3, 3, 3, 3, 3, 3, 3, 3, 3, 3],  // 1
-    //   [3, 3, 3, 3, 3, 3, 3, 3, 3, 3],  // 2
-    //   [3, 3, 2, 3, 3, 3, 3, 3, 2, 3],  // 3
-    //   [3, 3, 2, 3, 3, 2, 3, 3, 2, 3],  // 4
-    //   [3, 3, 2, 3, 3, 2, 3, 3, 3, 3],  // 5
-    //   [3, 3, 3, 3, 3, 2, 3, 3, 3, 3],  // 6
-    //   [3, 3, 3, 3, 3, 2, 3, 3, 3, 3],  // 7
-    //   [3, 2, 3, 3, 3, 3, 3, 3, 3, 3],  // 8
-    //   [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]  // 9
-    // ];
-
-    // this.playerTwoBoard = [
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 0
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 3
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 4
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 5
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
-    //   [0, 0, 0, 0, 1, 1, 1, 1, 0, 0],  // 8
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
-    // ];
-    
-    // this.scoreBoard = [
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 0
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 3
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 4
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 5
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 6
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 7
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 8
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
-    // ];
     // setView('start') off for dev
     this.setView('start');
     // this.startGame();
@@ -112,24 +73,31 @@ class Game {
           this.randomShip();
         });
 
-        const bRandomShipAll = this.newButton('randomShipAll', 'Random all fleet');
+        const bRandomShipAll = this.newButton(
+          'randomShipAll',
+          'Random all fleet'
+        );
         bRandomShipAll.addEventListener('click', () => {
           this.randomShipAll();
         });
 
-        const bStartGame = this.newButton('startGame', 'Start game', 'disabled');
+        const bStartGame = this.newButton(
+          'startGame',
+          'Start game',
+          'disabled'
+        );
         bStartGame.disabled = true;
         bStartGame.addEventListener('click', () => {
           this.startGame();
         });
-      
+
         buttons.appendChild(bRandomShip);
         buttons.appendChild(bRandomShipAll);
         buttons.appendChild(bStartGame);
 
         view.appendChild(settingBoard);
         view.appendChild(buttons);
-        
+
         break;
       case 'game':
         // header & legend
@@ -183,17 +151,23 @@ class Game {
 
     // init empty arrays to store boards, randomize opponent's board, enable setting player's board
     this.isWin = false;
-    
-    this.playerOneBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
-    this.playerTwoBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
-    this.scoreBoard = Array(this.boardSize).fill().map(() => Array(this.boardSize).fill(0));
+
+    this.playerOneBoard = Array(this.boardSize)
+      .fill()
+      .map(() => Array(this.boardSize).fill(0));
+    this.playerTwoBoard = Array(this.boardSize)
+      .fill()
+      .map(() => Array(this.boardSize).fill(0));
+    this.scoreBoard = Array(this.boardSize)
+      .fill()
+      .map(() => Array(this.boardSize).fill(0));
     this.setBoardFor('ai');
-    this.setBoardFor('player'); 
+    this.setBoardFor('player');
   }
 
   drawBoard(board) {
     const root = document.querySelector(`#${board}`);
-    let targetArray = []
+    let targetArray = [];
     if (board === 'player') targetArray = this.playerOneBoard;
     if (board === 'score') targetArray = this.scoreBoard;
 
@@ -208,7 +182,7 @@ class Game {
         if (item === 2) cell.classList.add('hit');
         if (item === 3) cell.classList.add('miss');
 
-        cell.setAttribute("data-location", `${board}-${i}-${j}`);       
+        cell.setAttribute('data-location', `${board}-${i}-${j}`);
         row.appendChild(cell);
       });
       root.appendChild(row);
@@ -229,8 +203,8 @@ class Game {
 
       // enable Events setEvents(rootElement, isGame);
       this.setEvents('player', false);
-    } 
-    
+    }
+
     if (player === 'ai') {
       // init new board
       this.shipSize = 5;
@@ -244,12 +218,13 @@ class Game {
 
     if (!isGame) {
       root.addEventListener('mouseover', event => {
-        if (event.target !== event.currentTarget) { 
+        if (event.target !== event.currentTarget) {
           const location = this.parseLocation(event);
           const ship = this.getShip(location);
           this.checkAvailable(ship);
           this.hover(ship, true);
-      }});
+        }
+      });
     }
 
     root.addEventListener('mouseout', event => {
@@ -273,16 +248,15 @@ class Game {
             const ship = this.getShip(location);
             this.checkAvailable(ship);
             if (this.isAvailable && this.shipAmount <= 5) this.placeShip(ship);
-          } 
-  
+          }
+
           if (isGame && this.currentPlayer === 'player' && this.canFire) {
             this.canFire = false;
             this.currentLocation = this.parseLocation(event);
             this.fireTorpedo();
             this.activeBoard.classList.add('wait');
-
           }
-        }  
+        }
       }
 
       // RIGHT-CLICK - vertical/horizontal ship
@@ -293,7 +267,9 @@ class Game {
           allHovered.forEach(div => {
             div.classList.remove('ship-hover', 'ship-hover-alert');
           });
-          this.rotation === true ? this.rotation = false : this.rotation = true;
+          this.rotation === true
+            ? (this.rotation = false)
+            : (this.rotation = true);
           const location = this.parseLocation(event);
           const ship = this.getShip(location);
           this.checkAvailable(ship);
@@ -313,7 +289,7 @@ class Game {
   hover(shipBody, isHover) {
     if (this.isAvailable) this.shipState = 'ship-hover';
     else this.shipState = 'ship-hover-alert';
-  
+
     if (shipBody) this.toggleHover(shipBody, isHover);
   }
 
@@ -330,9 +306,11 @@ class Game {
 
   placeShip(ship) {
     ship.forEach(segment => {
-      const div = document.querySelector(`[data-location='${segment.board}-${segment.posX}-${segment.posY}']`);
+      const div = document.querySelector(
+        `[data-location='${segment.board}-${segment.posX}-${segment.posY}']`
+      );
       if (div) div.classList.add('ship');
-  
+
       if (segment.board === 'player') {
         this.playerOneBoard[segment.posX][segment.posY] = 1;
       } else if (segment.board === 'ai') {
@@ -347,7 +325,7 @@ class Game {
       this.disableButton('randomShip');
       this.disableButton('randomShipAll');
       this.enableButton('startGame');
-    };
+    }
   }
 
   randomShip() {
@@ -361,7 +339,6 @@ class Game {
         isPlaced = true;
       }
     }
-    
   }
 
   randomShipAll() {
@@ -389,11 +366,12 @@ class Game {
     this.gameText = document.querySelector('#game-text');
     this.activeBoard = document.querySelector('#score');
     this.round();
+    console.log(this.playerTwoBoard);
   }
 
   async round() {
     // init round count
-    this.roundCount++  
+    this.roundCount++;
 
     this.activeBoard.classList.add('wait');
 
@@ -405,7 +383,7 @@ class Game {
       delay = 2000;
     } else {
       delay = 500;
-    } 
+    }
 
     // change heading content to:
     // 1st round - wait 2s than show first round count
@@ -414,7 +392,6 @@ class Game {
       this.gameText.innerHTML = `<h1>Round ${this.roundCount}<h1>`;
       this.gameText.innerHTML += `<h2>Your turn!</h2>`;
       this.activeBoard.classList.remove('wait');
-
     }, delay);
 
     // wait for player's move
@@ -433,7 +410,6 @@ class Game {
     this.gameText.innerHTML = `<h1>Round ${this.roundCount}<h1>`;
     this.gameText.innerHTML += `<h2>Wait for opponent's turn...</h2>`;
 
-
     // wait for player's move
     await this.turn();
 
@@ -450,15 +426,16 @@ class Game {
 
   turn() {
     this.isFired = false;
-    if (this.currentPlayer === 'ai' && this.canFire === true) this.fireTorpedo();
+    if (this.currentPlayer === 'ai' && this.canFire === true)
+      this.fireTorpedo();
     return new Promise((resolve, reject) => {
       const interval = setInterval(() => {
         if (this.isFired) {
           clearInterval(interval);
           resolve(true);
-        };
+        }
       }, 100);
-    });   
+    });
   }
 
   fireTorpedo() {
@@ -467,15 +444,15 @@ class Game {
       this.currentBoard = 'score';
       location = this.currentLocation;
       const cell = this.selectCell(location);
-      
+
       if (this.playerTwoBoard[location.posX][location.posY] === 1) {
-          this.playerTwoBoard[location.posX][location.posY] = 2;
-          cell.classList.add('hit');
+        this.playerTwoBoard[location.posX][location.posY] = 2;
+        cell.classList.add('hit');
       } else {
-          this.playerTwoBoard[location.posX][location.posY] = 3;
-          cell.classList.add('miss');
+        this.playerTwoBoard[location.posX][location.posY] = 3;
+        cell.classList.add('miss');
       }
-      setTimeout(() => this.isFired = true, 1000);
+      setTimeout(() => (this.isFired = true), 1000);
     }
 
     if (this.currentPlayer === 'ai') {
@@ -485,12 +462,16 @@ class Game {
       while (!validLocation) {
         this.getRandomLocation();
         location = this.randomLocation;
-        if (this.playerOneBoard[location.posX][location.posY] === 0) validLocation = true;
-        if (this.playerOneBoard[location.posX][location.posY] === 1) validLocation = true;
-        if (this.playerOneBoard[location.posX][location.posY] === 2) validLocation = false;
-        if (this.playerOneBoard[location.posX][location.posY] === 3) validLocation = false;
+        if (this.playerOneBoard[location.posX][location.posY] === 0)
+          validLocation = true;
+        if (this.playerOneBoard[location.posX][location.posY] === 1)
+          validLocation = true;
+        if (this.playerOneBoard[location.posX][location.posY] === 2)
+          validLocation = false;
+        if (this.playerOneBoard[location.posX][location.posY] === 3)
+          validLocation = false;
       }
-      
+
       let cell = this.selectCell(location);
 
       // 0 - empty space
@@ -507,7 +488,7 @@ class Game {
         } else {
           this.playerOneBoard[location.posX][location.posY] = 3;
           cell.classList.add('miss');
-        }        
+        }
         this.missileLog.push(location);
         this.canFire = false;
         this.isFired = true;
@@ -540,7 +521,7 @@ class Game {
   }
 
   win() {
-    let winner = this.currentPlayer === 'player' ? 'You' : 'Opponent'
+    let winner = this.currentPlayer === 'player' ? 'You' : 'Opponent';
     this.gameText.innerHTML = `<h1>${winner} won the battle!<h1>`;
     const bTryAgain = this.newButton('tryAgain', 'Try again..');
     bTryAgain.addEventListener('click', () => this.createNewGame());
@@ -574,17 +555,19 @@ class Game {
       board: location.split('-')[0],
       posX: parseInt(location.split('-')[1]),
       posY: parseInt(location.split('-')[2])
-    }
+    };
   }
 
   getShip(location, isRandom = false) {
     if (isRandom) this.rotation = Boolean(Math.floor(Math.random() * 2));
     const shipBody = [];
-    if (this.rotation) { // vertical
+    if (this.rotation) {
+      // vertical
       for (let i = 0; i < this.shipSize; i++) {
         shipBody[i] = this.getTop(location, i);
       }
-    } else { // horizontal
+    } else {
+      // horizontal
       for (let i = 0; i < this.shipSize; i++) {
         shipBody[i] = this.getLeft(location, i);
       }
@@ -599,9 +582,9 @@ class Game {
       board: currentCell.board,
       posX: newTop,
       posY: currentCell.posY
-    }
+    };
   }
-  
+
   getLeft(currentCell, amount) {
     if (currentCell.posY < 0) return false;
     const newLeft = currentCell.posY - amount;
@@ -609,28 +592,39 @@ class Game {
       board: currentCell.board,
       posX: currentCell.posX,
       posY: newLeft
-    }
+    };
   }
 
   selectCell(cell) {
-    const selectedCell = document.querySelector(`[data-location='${cell.board}-${cell.posX}-${cell.posY}']`);
+    const selectedCell = document.querySelector(
+      `[data-location='${cell.board}-${cell.posX}-${cell.posY}']`
+    );
     if (!selectedCell) return false;
     return selectedCell;
   }
 
   checkAvailable(cells) {
     let board = '';
-    
+
     this.isAvailable = cells.every(cell => {
-      cell.board === 'player' ? board = this.playerOneBoard : board = this.playerTwoBoard;
-      
-      if (cell.posX >= 0 && cell.posX < this.boardSize && cell.posY >= 0 && cell.posY < this.boardSize) {
+      cell.board === 'player'
+        ? (board = this.playerOneBoard)
+        : (board = this.playerTwoBoard);
+
+      if (
+        cell.posX >= 0 &&
+        cell.posX < this.boardSize &&
+        cell.posY >= 0 &&
+        cell.posY < this.boardSize
+      ) {
         this.isOnMap = true;
-        board[cell.posX][cell.posY] === 1 ? this.isEmpty = false : this.isEmpty = true;
+        board[cell.posX][cell.posY] === 1
+          ? (this.isEmpty = false)
+          : (this.isEmpty = true);
       } else {
         this.isOnMap = false;
       }
-  
+
       return this.isOnMap && this.isEmpty;
     });
   }
