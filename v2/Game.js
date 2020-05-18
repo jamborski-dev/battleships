@@ -16,26 +16,52 @@ class Game {
     this.canFire = true;
     this.randomLocation = {};
     this.currentLocation = {};
-    this.missileLog = [];
+    this.history = [];
 
     // TEST BOARDS
     // example default board
-    // this.playerOneBoard = [
-    //   [0, 0, 1, 1, 1, 1, 1, 0, 0, 0],  // 0
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 1
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  // 2
-    //   [0, 0, 1, 0, 0, 0, 0, 0, 1, 0],  // 3
-    //   [0, 0, 1, 0, 0, 1, 0, 0, 1, 0],  // 4
-    //   [0, 0, 1, 0, 0, 1, 0, 0, 0, 0],  // 5
-    //   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  // 6
-    //   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  // 7
-    //   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  // 8
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 9
-    // ];
+    this.playerOneBoard = [
+      [1, 0, 1, 1, 1, 1, 1, 1, 0, 1], // 0
+      [1, 0, 0, 1, 0, 0, 0, 1, 0, 1], // 1
+      [1, 0, 0, 1, 0, 0, 0, 1, 0, 1], // 2
+      [1, 0, 1, 1, 0, 0, 0, 1, 1, 1], // 3
+      [1, 0, 1, 1, 0, 1, 0, 1, 1, 1], // 4
+      [1, 0, 1, 1, 0, 1, 0, 1, 0, 1], // 5
+      [1, 0, 0, 1, 0, 1, 0, 1, 0, 1], // 6
+      [1, 0, 0, 1, 0, 1, 0, 1, 0, 1], // 7
+      [1, 1, 0, 1, 0, 0, 0, 1, 0, 1], // 8
+      [1, 0, 0, 1, 0, 0, 0, 1, 0, 1] // 9
+    ];
+
+    this.playerTwoBoard = [
+      [0, 0, 1, 1, 1, 1, 1, 0, 0, 0], // 0
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 1
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 2
+      [0, 0, 1, 0, 0, 0, 0, 0, 1, 0], // 3
+      [0, 0, 1, 0, 0, 1, 0, 0, 1, 0], // 4
+      [0, 0, 1, 0, 0, 1, 0, 0, 0, 0], // 5
+      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0], // 6
+      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0], // 7
+      [0, 1, 0, 0, 0, 0, 0, 0, 0, 0], // 8
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] // 9
+    ];
+
+    this.scoreBoard = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 0
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 1
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 2
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 3
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 4
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 5
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 6
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 7
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 8
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] // 9
+    ];
 
     // setView('start') off for dev
-    this.setView('start');
-    // this.startGame();
+    // this.setView('game');
+    this.startGame();
   }
 
   setView(setting) {
@@ -73,19 +99,12 @@ class Game {
           this.randomShip();
         });
 
-        const bRandomShipAll = this.newButton(
-          'randomShipAll',
-          'Random all fleet'
-        );
+        const bRandomShipAll = this.newButton('randomShipAll', 'Random all fleet');
         bRandomShipAll.addEventListener('click', () => {
           this.randomShipAll();
         });
 
-        const bStartGame = this.newButton(
-          'startGame',
-          'Start game',
-          'disabled'
-        );
+        const bStartGame = this.newButton('startGame', 'Start game', 'disabled');
         bStartGame.disabled = true;
         bStartGame.addEventListener('click', () => {
           this.startGame();
@@ -267,9 +286,7 @@ class Game {
           allHovered.forEach(div => {
             div.classList.remove('ship-hover', 'ship-hover-alert');
           });
-          this.rotation === true
-            ? (this.rotation = false)
-            : (this.rotation = true);
+          this.rotation === true ? (this.rotation = false) : (this.rotation = true);
           const location = this.parseLocation(event);
           const ship = this.getShip(location);
           this.checkAvailable(ship);
@@ -410,6 +427,7 @@ class Game {
     this.gameText.innerHTML = `<h1>Round ${this.roundCount}<h1>`;
     this.gameText.innerHTML += `<h2>Wait for opponent's turn...</h2>`;
 
+    console.log('Round', this.roundCount);
     // wait for player's move
     await this.turn();
 
@@ -426,8 +444,7 @@ class Game {
 
   turn() {
     this.isFired = false;
-    if (this.currentPlayer === 'ai' && this.canFire === true)
-      this.fireTorpedo();
+    if (this.currentPlayer === 'ai' && this.canFire === true) this.fireTorpedo();
     return new Promise((resolve, reject) => {
       const interval = setInterval(() => {
         if (this.isFired) {
@@ -438,41 +455,147 @@ class Game {
     });
   }
 
+  pickRandomLocation() {
+    let targetLocation = {};
+    let validLocation = false;
+    while (!validLocation) {
+      // generates random X, Y for currently set board
+      this.getRandomLocation();
+      targetLocation = this.randomLocation;
+      if (
+        this.playerOneBoard[targetLocation.posX][targetLocation.posY] === 2 ||
+        this.playerOneBoard[targetLocation.posX][targetLocation.posY] === 3
+      )
+        validLocation = false;
+      else validLocation = true;
+    }
+    return targetLocation;
+  }
+
+  getNeighbours(currentLocation) {
+    console.log('checking for neighbours of ', currentLocation);
+    const { posX, posY, board } = currentLocation;
+    const neighbours = {};
+
+    // get all neighbours of current cell
+    neighbours.top = {
+      id: 'top',
+      posX: posX - 1,
+      posY: posY
+    };
+    neighbours.left = {
+      id: 'left',
+      posX: posX,
+      posY: posY - 1
+    };
+    neighbours.right = {
+      id: 'right',
+      posX: posX,
+      posY: posY + 1
+    };
+    neighbours.bottom = {
+      id: 'bottom',
+      posX: posX + 1,
+      posY: posY
+    };
+
+    return neighbours;
+  }
+
   fireTorpedo() {
-    let location = {};
+    let targetLocation = {};
+
+    // player's turn
     if (this.currentPlayer === 'player') {
       this.currentBoard = 'score';
-      location = this.currentLocation;
-      const cell = this.selectCell(location);
+      targetLocation = this.currentLocation;
+      const cell = this.selectCell(targetLocation);
 
-      if (this.playerTwoBoard[location.posX][location.posY] === 1) {
-        this.playerTwoBoard[location.posX][location.posY] = 2;
+      if (this.playerTwoBoard[targetLocation.posX][targetLocation.posY] === 1) {
+        this.playerTwoBoard[targetLocation.posX][targetLocation.posY] = 2;
         cell.classList.add('hit');
       } else {
-        this.playerTwoBoard[location.posX][location.posY] = 3;
+        this.playerTwoBoard[targetLocation.posX][targetLocation.posY] = 3;
         cell.classList.add('miss');
       }
       setTimeout(() => (this.isFired = true), 1000);
     }
 
+    // AI turn
     if (this.currentPlayer === 'ai') {
-      let validLocation = false;
       this.currentBoard = 'player';
 
-      while (!validLocation) {
-        this.getRandomLocation();
-        location = this.randomLocation;
-        if (this.playerOneBoard[location.posX][location.posY] === 0)
-          validLocation = true;
-        if (this.playerOneBoard[location.posX][location.posY] === 1)
-          validLocation = true;
-        if (this.playerOneBoard[location.posX][location.posY] === 2)
-          validLocation = false;
-        if (this.playerOneBoard[location.posX][location.posY] === 3)
-          validLocation = false;
+      // if history[] empty pick random location
+      if (!this.history.length) {
+        targetLocation = this.pickRandomLocation();
+      } else {
+        // check history for hit locations
+        let hits = this.history.filter(entry => entry.isHit === true);
+
+        if (hits.length) {
+          console.log('hits log:', hits);
+          const neighbours = this.getNeighbours(hits[hits.length - 1]);
+          const { top, left, right, bottom } = neighbours;
+          console.log(top, left, right, bottom);
+          let validNeighbours = [];
+          let availableLocations = [];
+          let neighboursHit = [];
+
+          // check if all neighbouring locations are in the bounds of the borad
+          if (
+            top.posX >= 0 &&
+            top.posX < this.boardSize &&
+            top.posY >= 0 &&
+            top.posY < this.boardSize
+          ) {
+            validNeighbours.push(top);
+          }
+          if (
+            left.posX >= 0 &&
+            left.posX < this.boardSize &&
+            left.posY >= 0 &&
+            left.posY < this.boardSize
+          ) {
+            validNeighbours.push(left);
+          }
+          if (
+            right.posX >= 0 &&
+            right.posX < this.boardSize &&
+            right.posY >= 0 &&
+            right.posY < this.boardSize
+          ) {
+            validNeighbours.push(right);
+          }
+          if (
+            bottom.posX >= 0 &&
+            bottom.posX < this.boardSize &&
+            bottom.posY >= 0 &&
+            bottom.posY < this.boardSize
+          ) {
+            validNeighbours.push(bottom);
+          }
+
+          console.log('validNeighbours:', validNeighbours);
+
+          availableLocations = validNeighbours.filter(item => {
+            return (
+              this.playerOneBoard[item.posX][item.posY] !== 2 &&
+              this.playerOneBoard[item.posX][item.posY] !== 3
+            );
+          });
+          console.log('availableLocations:', availableLocations);
+
+          // check if last 2 hits were next to each other
+
+          let randomIndex = Math.floor(Math.random() * availableLocations.length);
+
+          targetLocation = availableLocations[randomIndex];
+        } else {
+          targetLocation = this.pickRandomLocation();
+        }
       }
 
-      let cell = this.selectCell(location);
+      let cell = this.selectCell(targetLocation, 'player');
 
       // 0 - empty space
       // 1 - ship
@@ -481,15 +604,19 @@ class Game {
 
       // make pause for AI to 'make move'
       setTimeout(() => {
-        if (this.playerOneBoard[location.posX][location.posY] === 1) {
-          this.playerOneBoard[location.posX][location.posY] = 2;
+        if (this.playerOneBoard[targetLocation.posX][targetLocation.posY] === 1) {
+          this.playerOneBoard[targetLocation.posX][targetLocation.posY] = 2;
           cell.classList.add('hit');
           this.isHit = true;
         } else {
-          this.playerOneBoard[location.posX][location.posY] = 3;
+          this.playerOneBoard[targetLocation.posX][targetLocation.posY] = 3;
           cell.classList.add('miss');
+          this.isHit = false;
         }
-        this.missileLog.push(location);
+
+        targetLocation.isHit = this.isHit;
+        this.history.push(targetLocation);
+
         this.canFire = false;
         this.isFired = true;
         // setTimeout(() => this.isFired = true, 2000);
@@ -595,9 +722,10 @@ class Game {
     };
   }
 
-  selectCell(cell) {
+  selectCell(cell, board) {
+    const targetBoard = board || cell.board;
     const selectedCell = document.querySelector(
-      `[data-location='${cell.board}-${cell.posX}-${cell.posY}']`
+      `[data-location='${targetBoard}-${cell.posX}-${cell.posY}']`
     );
     if (!selectedCell) return false;
     return selectedCell;
@@ -607,9 +735,7 @@ class Game {
     let board = '';
 
     this.isAvailable = cells.every(cell => {
-      cell.board === 'player'
-        ? (board = this.playerOneBoard)
-        : (board = this.playerTwoBoard);
+      cell.board === 'player' ? (board = this.playerOneBoard) : (board = this.playerTwoBoard);
 
       if (
         cell.posX >= 0 &&
@@ -618,9 +744,7 @@ class Game {
         cell.posY < this.boardSize
       ) {
         this.isOnMap = true;
-        board[cell.posX][cell.posY] === 1
-          ? (this.isEmpty = false)
-          : (this.isEmpty = true);
+        board[cell.posX][cell.posY] === 1 ? (this.isEmpty = false) : (this.isEmpty = true);
       } else {
         this.isOnMap = false;
       }
