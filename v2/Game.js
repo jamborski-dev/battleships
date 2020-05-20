@@ -17,6 +17,7 @@ class Game {
     this.randomLocation = {};
     this.currentLocation = {};
     this.history = [];
+    this.hitsInRow = 0;
 
     // TEST BOARDS
     // example default board
@@ -270,6 +271,7 @@ class Game {
           }
 
           if (isGame && this.currentPlayer === 'player' && this.canFire) {
+            if (!event.target.classList.contains('cell')) return;
             this.canFire = false;
             this.currentLocation = this.parseLocation(event);
             this.fireTorpedo();
@@ -476,6 +478,7 @@ class Game {
     console.log('checking for neighbours of ', currentLocation);
     const { posX, posY } = currentLocation;
     const neighbours = {};
+    let availableLocations = [];
 
     // get all neighbours of current cell
     neighbours.top = {
@@ -530,38 +533,45 @@ class Game {
       validNeighbours.push(bottom);
     }
 
-    return validNeighbours;
+    availableLocations = validNeighbours.filter(item => {
+      return (
+        this.playerOneBoard[item.posX][item.posY] !== 2 &&
+        this.playerOneBoard[item.posX][item.posY] !== 3
+      );
+    });
+
+    return availableLocations;
   }
 
-  checkForHitRows() {
-    const allHits = [];
-    for (let i = 0; i < this.boardSize; i++) {
-      for (let j = 0; j < this.boardSize; j++) {
-        if (this.playerOneBoard[i][j] == 2) allHits.push({ posX: i, posY: j });
-      }
-    }
-    console.log('all hits on the board', allHits);
+  // checkForHitRows() {
+  //   const allHits = [];
+  //   for (let i = 0; i < this.boardSize; i++) {
+  //     for (let j = 0; j < this.boardSize; j++) {
+  //       if (this.playerOneBoard[i][j] == 2) allHits.push({ posX: i, posY: j });
+  //     }
+  //   }
+  //   console.log('all hits on the board', allHits);
 
-    const horizontals = [];
-    const verticals = [];
-    for (let i = 1; i < allHits.length; i++) {
-      if (allHits[i].posX - allHits[i - 1].posX == 0) {
-        horizontals.push(allHits[i - 1]);
-      }
+  //   const horizontals = [];
+  //   const verticals = [];
+  //   for (let i = 1; i < allHits.length; i++) {
+  //     if (allHits[i].posX - allHits[i - 1].posX == 0) {
+  //       horizontals.push(allHits[i - 1]);
+  //     }
 
-      if (allHits[i].posY - allHits[i - 1].posY == 0) {
-        verticals.push(allHits[i - 1]);
-      }
-    }
+  //     if (allHits[i].posY - allHits[i - 1].posY == 0) {
+  //       verticals.push(allHits[i - 1]);
+  //     }
+  //   }
 
-    if (horizontals.length) console.log('horizontals: ', horizontals);
-    if (verticals.length) console.log('verticals: ', verticals);
+  //   if (horizontals.length) console.log('horizontals: ', horizontals);
+  //   if (verticals.length) console.log('verticals: ', verticals);
 
-    return {
-      verticals,
-      horizontals
-    };
-  }
+  //   return {
+  //     verticals,
+  //     horizontals
+  //   };
+  // }
 
   fireTorpedo() {
     let targetLocation = {};
@@ -586,81 +596,81 @@ class Game {
     if (this.currentPlayer === 'ai') {
       this.currentBoard = 'player';
 
-      const rows = this.checkForHitRows();
+      const history = this.history;
+      const hits = history.filter(entry => entry.isHit === true);
 
-      // if history[] empty pick random location
-      if (!this.history.length) {
+      // 1. Fire at random in the first round
+      //    OR
+      //    no HITS
+      if (this.roundCount === 1 || !hits.length) {
+        console.log('no previous shots fired');
         this.isRandomHit = true;
         targetLocation = this.pickRandomLocation();
-      } else {
-        // check history for hit locations
-        let hits = this.history.filter(entry => entry.isHit === true);
-        const lastHit = hits[hits.length - 1];
+      }
 
-        if (hits.length) {
-          // console.log('hits log:', hits);
-          const neighbours = this.getNeighbours(lastHit);
-          let availableLocations = [];
+      // 2. Second round
+      //    AND
+      //    there was HITS
+      if (this.roundCount >= 2 && hits.length) {
+        const firstShot = history[0];
+        const lastShot = history[history.length - 1];
 
-          // check if all neighbouring locations are in the bounds of the borad
+        const firstHit = hits[0];
+        const lastHit = hits[hits.length - 1] || false;
+        const secLastHit = hits[hits.length - 2] || false;
 
-          // console.log('validNeighbours:', neighbours);
+        // console.group('hisotry vars: ');
+        // console.log('first shot: ', firstShot);
+        // console.log('last shot: ', lastShot);
+        // console.log('last hit: ', lastHit);
+        // console.log('sec to last hit: ', secLastHit);
+        // console.groupEnd();
 
-          availableLocations = neighbours.filter(item => {
-            return (
-              this.playerOneBoard[item.posX][item.posY] !== 2 &&
-              this.playerOneBoard[item.posX][item.posY] !== 3
-            );
-          });
-          console.log('availableLocations:', availableLocations);
+        // 3. Check all neighbouring cells around the FIRST && ONLY HIT
+        if (hits.length === 1) {
+          const neighbours = this.getNeighbours(firstHit);
 
-          // check if last 5 hits were next to each other
-          // AND determine in what direction next hit should be
-          let nextHit = [];
-          if (hits.length > 1) {
-            const secondLastHit = hits[hits.length - 2];
-            // console.log('last hit: ', lastHit);
-            // console.log('2nd to last hit: ', secondLastHit);
-            if (secondLastHit.posX - lastHit.posX == 0) {
-              console.log('next hit should be horizontal');
-              nextHit = availableLocations.filter(item => {
-                if (item.id == 'left' || item.id == 'right') return item;
-              });
-            }
-
-            if (secondLastHit.posY - lastHit.posY == 0) {
-              console.log('next hit should be vertical');
-              nextHit = availableLocations.filter(item => {
-                if (item.id == 'top' || item.id == 'bottom') return item;
-              });
-            }
-
-            if (lastHit.hasOwnProperty('id')) {
-              let nextHitInDirection = nextHit.filter(hit => hit.id === lastHit.id);
-              targetLocation = nextHitInDirection;
-            }
-
-            if (!availableLocations.length) {
-              this.isRandomHit = true;
-              targetLocation = this.pickRandomLocation();
-            }
+          // 3A. Fire at any of the available neighbbours (within board && not visited)
+          if (neighbours.length) {
+            const randomIndex = Math.floor(Math.random() * neighbours.length);
+            targetLocation = neighbours[randomIndex];
           } else {
-            let randomIndex = Math.floor(Math.random() * availableLocations.length);
-            targetLocation = availableLocations[randomIndex];
+            // .. OR fire at random if no valid neighbours found (1-cell ship)
+            //    * place for logic of looking through
+            //      the row of last shots if exists *
+            this.isRandomHit = true;
+            targetLocation = this.pickRandomLocation();
           }
-        } else {
-          this.isRandomHit = true;
-          targetLocation = this.pickRandomLocation();
+        }
+
+        // 4. Fire at the direction FOLLOWING || OPPOSIT to the last HIT
+        if (hits.length >= 2) {
+          console.log('...determining direction of next hit...');
+          // 4A. Get all available neighbours
+          const neighbours = this.getNeighbours(lastHit);
+          console.log('all neighbours: ', neighbours);
+
+          // 4B. Find a neighbouring cell that was in the same direction as last HIT
+          let nextHit = neighbours.filter(item => item.id === lastHit.id);
+          console.log('next hit: ', nextHit);
+
+          // 4C. If above found fire at this cell
+          if (nextHit.length) {
+            targetLocation = nextHit;
+          } else {
+            // 4D. Get previous HITS to check for neiboughrs in the direction
+          }
         }
       }
 
+      // BOARD VALUES GUIDE
+      //    0 - empty space
+      //    1 - ship
+      //    2 - hit
+      //    3 - miss
+
+      // select HTML cell to add class
       let cell = this.selectCell(targetLocation, 'player');
-
-      // 0 - empty space
-      // 1 - ship
-      // 2 - hit
-      // 3 - miss
-
       // make pause for AI to 'make move'
       setTimeout(() => {
         if (this.playerOneBoard[targetLocation.posX][targetLocation.posY] === 1) {
@@ -679,7 +689,7 @@ class Game {
         this.canFire = false;
         this.isFired = true;
         // setTimeout(() => this.isFired = true, 2000);
-      }, 2000);
+      }, 500);
     }
   }
 

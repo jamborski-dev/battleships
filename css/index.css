@@ -54,7 +54,7 @@ h3 {
 }
 
 .board.score > .row > .cell:hover::after {
-  content: "X";
+  content: 'X';
   color: #fff;
   position: absolute;
   padding: 7px 10px;
@@ -76,15 +76,16 @@ h3 {
 }
 
 .cell.miss {
-  background-color: rgb(184, 16, 16);  
+  background-color: rgb(184, 16, 16);
   color: #fff;
   pointer-events: none;
 }
 .cell.miss::after {
-  content: "M";
+  content: 'M';
   position: absolute;
   padding-top: 7px;
   padding-left: 8px;
+  pointer-events: none;
 }
 
 .cell.hit {
@@ -93,10 +94,11 @@ h3 {
   pointer-events: none;
 }
 .cell.hit::after {
-  content: "H";
+  content: 'H';
   position: absolute;
   padding-top: 7px;
   padding-left: 10px;
+  pointer-events: none;
 }
 
 .ship-hover {
