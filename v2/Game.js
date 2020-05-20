@@ -11,58 +11,72 @@ class Game {
     this.isEmpty = true;
     this.shipState = 'ship-hover';
 
-    this.roundCount = 0;
+    this.roundCount = 3;
     this.isFired = false;
     this.canFire = true;
+    this.isReveresed = false;
+    this.isEnd = false;
     this.randomLocation = {};
     this.currentLocation = {};
-    this.history = [];
-    this.hitsInRow = 0;
+    this.history = [
+      {
+        id: 'player',
+        posX: 3,
+        posY: 3,
+        isHit: true
+      },
+      {
+        id: 'bottom',
+        posX: 4,
+        posY: 3,
+        isHit: true
+      }
+    ];
 
     // TEST BOARDS
     // example default board
-    this.playerOneBoard = [
-      [1, 0, 1, 1, 1, 1, 1, 1, 0, 1], // 0
-      [1, 0, 0, 1, 0, 0, 0, 1, 0, 1], // 1
-      [1, 0, 0, 1, 0, 0, 0, 1, 0, 1], // 2
-      [1, 0, 1, 1, 0, 0, 0, 1, 1, 1], // 3
-      [1, 0, 1, 1, 0, 1, 0, 1, 1, 1], // 4
-      [1, 0, 1, 1, 0, 1, 0, 1, 0, 1], // 5
-      [1, 0, 0, 1, 0, 1, 0, 1, 0, 1], // 6
-      [1, 0, 0, 1, 0, 1, 0, 1, 0, 1], // 7
-      [1, 1, 0, 1, 0, 0, 0, 1, 0, 1], // 8
-      [1, 0, 0, 1, 0, 0, 0, 1, 0, 1] // 9
-    ];
+    // this.playerOneBoard = [
+    //   [1, 0, 1, 1, 1, 1, 1, 1, 0, 1], // 0
+    //   [1, 0, 0, 1, 0, 0, 0, 1, 0, 1], // 1
+    //   [1, 0, 0, 1, 0, 0, 0, 1, 0, 1], // 2
+    //   [1, 0, 1, 1, 0, 0, 0, 1, 1, 1], // 3
+    //   [1, 0, 1, 1, 0, 1, 0, 1, 1, 1], // 4
+    //   [1, 0, 1, 1, 0, 1, 0, 1, 0, 1], // 5
+    //   [1, 0, 0, 1, 0, 1, 0, 1, 0, 1], // 6
+    //   [1, 0, 0, 1, 0, 1, 0, 1, 0, 1], // 7
+    //   [1, 1, 0, 1, 0, 0, 0, 1, 0, 1], // 8
+    //   [1, 0, 0, 1, 0, 0, 0, 1, 0, 1] // 9
+    // ];
 
-    this.playerTwoBoard = [
-      [0, 0, 1, 1, 1, 1, 1, 0, 0, 0], // 0
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 1
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 2
-      [0, 0, 1, 0, 0, 0, 0, 0, 1, 0], // 3
-      [0, 0, 1, 0, 0, 1, 0, 0, 1, 0], // 4
-      [0, 0, 1, 0, 0, 1, 0, 0, 0, 0], // 5
-      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0], // 6
-      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0], // 7
-      [0, 1, 0, 0, 0, 0, 0, 0, 0, 0], // 8
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] // 9
-    ];
+    // this.playerTwoBoard = [
+    //   [0, 0, 1, 1, 1, 1, 1, 0, 0, 0], // 0
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 1
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 2
+    //   [0, 0, 1, 0, 0, 0, 0, 0, 1, 0], // 3
+    //   [0, 0, 1, 0, 0, 1, 0, 0, 1, 0], // 4
+    //   [0, 0, 1, 0, 0, 1, 0, 0, 0, 0], // 5
+    //   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0], // 6
+    //   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0], // 7
+    //   [0, 1, 0, 0, 0, 0, 0, 0, 0, 0], // 8
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] // 9
+    // ];
 
-    this.scoreBoard = [
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 0
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 1
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 2
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 3
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 4
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 5
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 6
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 7
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 8
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] // 9
-    ];
+    // this.scoreBoard = [
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 0
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 1
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 2
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 3
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 4
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 5
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 6
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 7
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 8
+    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] // 9
+    // ];
 
     // setView('start') off for dev
-    // this.setView('game');
-    this.startGame();
+    this.setView('start');
+    // this.startGame();
   }
 
   setView(setting) {
@@ -644,22 +658,54 @@ class Game {
         }
 
         // 4. Fire at the direction FOLLOWING || OPPOSIT to the last HIT
-        if (hits.length >= 2) {
+        if (hits.length > 1) {
           console.log('...determining direction of next hit...');
           // 4A. Get all available neighbours
           const neighbours = this.getNeighbours(lastHit);
-          console.log('all neighbours: ', neighbours);
+          // console.log('all neighbours: ', neighbours);
 
           // 4B. Find a neighbouring cell that was in the same direction as last HIT
           let nextHit = neighbours.filter(item => item.id === lastHit.id);
-          console.log('next hit: ', nextHit);
+          let hitDir = lastHit.id;
 
-          // 4C. If above found fire at this cell
-          if (nextHit.length) {
-            targetLocation = nextHit;
-          } else {
-            // 4D. Get previous HITS to check for neiboughrs in the direction
+          // 4C. Loop until TARGET LOCATION is defined
+          // 4D. If above found fire at this cell
+          if (nextHit.length === 1) {
+            targetLocation = nextHit[0]; // array -> object
           }
+
+          // 4E. If there is no more cell to fire
+          if (!nextHit.length) {
+            // 5. Get previous HITS to check for neiboughrs in the direction
+            // 5A. Switch directions
+
+            if (!this.isReveresed) {
+              this.isReveresed = true;
+              let reverseDir = '';
+
+              if (hitDir === 'top') reverseDir = 'bottom';
+              if (hitDir === 'bottom') reverseDir = 'top';
+              if (hitDir === 'left') reverseDir = 'right';
+              if (hitDir === 'right') reverseDir = 'left';
+
+              console.log('reversing direction');
+              // 5B. Get the previous cell on the opposite direction
+              nextHit = this.reverse(lastHit, reverseDir);
+
+              console.log(nextHit);
+
+              if (nextHit) {
+                targetLocation = nextHit;
+              }
+            } else {
+              this.history = [];
+              this.isReveresed = false;
+              this.isRandomHit = true;
+              targetLocation = this.pickRandomLocation();
+            }
+          }
+
+          // console.log(targetLocation);
         }
       }
 
@@ -668,6 +714,11 @@ class Game {
       //    1 - ship
       //    2 - hit
       //    3 - miss
+
+      if (this.isEmptyObject(targetLocation)) {
+        this.isRandomHit = true;
+        targetLocation = this.pickRandomLocation();
+      }
 
       // select HTML cell to add class
       let cell = this.selectCell(targetLocation, 'player');
@@ -689,7 +740,7 @@ class Game {
         this.canFire = false;
         this.isFired = true;
         // setTimeout(() => this.isFired = true, 2000);
-      }, 500);
+      }, 1000);
     }
   }
 
@@ -820,6 +871,79 @@ class Game {
 
       return this.isOnMap && this.isEmpty;
     });
+  }
+
+  isEmptyObject(obj) {
+    for (let prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  reverse(lastLocation, dir) {
+    if (dir === 'top') {
+      for (let i = lastLocation.posX; i >= 0; i--) {
+        if (this.playerOneBoard[i][lastLocation.posY] === 3) return;
+        if (
+          this.playerOneBoard[i][lastLocation.posY] === 0 ||
+          this.playerOneBoard[i][lastLocation.posY] === 1
+        ) {
+          return {
+            id: dir,
+            posX: i,
+            posY: lastLocation.posY
+          };
+        }
+      }
+    }
+    if (dir === 'bottom') {
+      for (let i = lastLocation.posX; i < this.boardSize; i++) {
+        if (this.playerOneBoard[i][lastLocation.posY] === 3) return;
+        if (
+          this.playerOneBoard[i][lastLocation.posY] === 0 ||
+          this.playerOneBoard[i][lastLocation.posY] === 1
+        ) {
+          return {
+            id: dir,
+            posX: i,
+            posY: lastLocation.posY
+          };
+        }
+      }
+    }
+    if (dir === 'left') {
+      for (let i = lastLocation.posX; i >= 0; i--) {
+        if (this.playerOneBoard[lastLocation.posX][i] === 3) return;
+        if (
+          this.playerOneBoard[lastLocation.posX][i] === 0 ||
+          this.playerOneBoard[lastLocation.posX][i] === 1
+        ) {
+          return {
+            id: dir,
+            posX: lastLocation.posX,
+            posY: i
+          };
+        }
+      }
+    }
+    if (dir === 'right') {
+      for (let i = lastLocation.posX; i < this.boardSize; i++) {
+        if (this.playerOneBoard[lastLocation.posX][i] === 3) return;
+        if (
+          this.playerOneBoard[lastLocation.posX][i] === 0 ||
+          this.playerOneBoard[lastLocation.posX][i] === 1
+        ) {
+          return {
+            id: dir,
+            posX: lastLocation.posX,
+            posY: i
+          };
+        }
+      }
+    }
   }
 }
 
