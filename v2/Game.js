@@ -474,7 +474,7 @@ class Game {
 
   getNeighbours(currentLocation) {
     console.log('checking for neighbours of ', currentLocation);
-    const { posX, posY, board } = currentLocation;
+    const { posX, posY } = currentLocation;
     const neighbours = {};
 
     // get all neighbours of current cell
@@ -499,7 +499,68 @@ class Game {
       posY: posY
     };
 
-    return neighbours;
+    const { top, left, right, bottom } = neighbours;
+    const validNeighbours = [];
+
+    if (top.posX >= 0 && top.posX < this.boardSize && top.posY >= 0 && top.posY < this.boardSize) {
+      validNeighbours.push(top);
+    }
+    if (
+      left.posX >= 0 &&
+      left.posX < this.boardSize &&
+      left.posY >= 0 &&
+      left.posY < this.boardSize
+    ) {
+      validNeighbours.push(left);
+    }
+    if (
+      right.posX >= 0 &&
+      right.posX < this.boardSize &&
+      right.posY >= 0 &&
+      right.posY < this.boardSize
+    ) {
+      validNeighbours.push(right);
+    }
+    if (
+      bottom.posX >= 0 &&
+      bottom.posX < this.boardSize &&
+      bottom.posY >= 0 &&
+      bottom.posY < this.boardSize
+    ) {
+      validNeighbours.push(bottom);
+    }
+
+    return validNeighbours;
+  }
+
+  checkForHitRows() {
+    const allHits = [];
+    for (let i = 0; i < this.boardSize; i++) {
+      for (let j = 0; j < this.boardSize; j++) {
+        if (this.playerOneBoard[i][j] == 2) allHits.push({ posX: i, posY: j });
+      }
+    }
+    console.log('all hits on the board', allHits);
+
+    const horizontals = [];
+    const verticals = [];
+    for (let i = 1; i < allHits.length; i++) {
+      if (allHits[i].posX - allHits[i - 1].posX == 0) {
+        horizontals.push(allHits[i - 1]);
+      }
+
+      if (allHits[i].posY - allHits[i - 1].posY == 0) {
+        verticals.push(allHits[i - 1]);
+      }
+    }
+
+    if (horizontals.length) console.log('horizontals: ', horizontals);
+    if (verticals.length) console.log('verticals: ', verticals);
+
+    return {
+      verticals,
+      horizontals
+    };
   }
 
   fireTorpedo() {
@@ -525,59 +586,27 @@ class Game {
     if (this.currentPlayer === 'ai') {
       this.currentBoard = 'player';
 
+      const rows = this.checkForHitRows();
+
       // if history[] empty pick random location
       if (!this.history.length) {
+        this.isRandomHit = true;
         targetLocation = this.pickRandomLocation();
       } else {
         // check history for hit locations
         let hits = this.history.filter(entry => entry.isHit === true);
+        const lastHit = hits[hits.length - 1];
 
         if (hits.length) {
-          console.log('hits log:', hits);
-          const neighbours = this.getNeighbours(hits[hits.length - 1]);
-          const { top, left, right, bottom } = neighbours;
-          console.log(top, left, right, bottom);
-          let validNeighbours = [];
+          // console.log('hits log:', hits);
+          const neighbours = this.getNeighbours(lastHit);
           let availableLocations = [];
-          let neighboursHit = [];
 
           // check if all neighbouring locations are in the bounds of the borad
-          if (
-            top.posX >= 0 &&
-            top.posX < this.boardSize &&
-            top.posY >= 0 &&
-            top.posY < this.boardSize
-          ) {
-            validNeighbours.push(top);
-          }
-          if (
-            left.posX >= 0 &&
-            left.posX < this.boardSize &&
-            left.posY >= 0 &&
-            left.posY < this.boardSize
-          ) {
-            validNeighbours.push(left);
-          }
-          if (
-            right.posX >= 0 &&
-            right.posX < this.boardSize &&
-            right.posY >= 0 &&
-            right.posY < this.boardSize
-          ) {
-            validNeighbours.push(right);
-          }
-          if (
-            bottom.posX >= 0 &&
-            bottom.posX < this.boardSize &&
-            bottom.posY >= 0 &&
-            bottom.posY < this.boardSize
-          ) {
-            validNeighbours.push(bottom);
-          }
 
-          console.log('validNeighbours:', validNeighbours);
+          // console.log('validNeighbours:', neighbours);
 
-          availableLocations = validNeighbours.filter(item => {
+          availableLocations = neighbours.filter(item => {
             return (
               this.playerOneBoard[item.posX][item.posY] !== 2 &&
               this.playerOneBoard[item.posX][item.posY] !== 3
@@ -585,12 +614,42 @@ class Game {
           });
           console.log('availableLocations:', availableLocations);
 
-          // check if last 2 hits were next to each other
+          // check if last 5 hits were next to each other
+          // AND determine in what direction next hit should be
+          let nextHit = [];
+          if (hits.length > 1) {
+            const secondLastHit = hits[hits.length - 2];
+            // console.log('last hit: ', lastHit);
+            // console.log('2nd to last hit: ', secondLastHit);
+            if (secondLastHit.posX - lastHit.posX == 0) {
+              console.log('next hit should be horizontal');
+              nextHit = availableLocations.filter(item => {
+                if (item.id == 'left' || item.id == 'right') return item;
+              });
+            }
 
-          let randomIndex = Math.floor(Math.random() * availableLocations.length);
+            if (secondLastHit.posY - lastHit.posY == 0) {
+              console.log('next hit should be vertical');
+              nextHit = availableLocations.filter(item => {
+                if (item.id == 'top' || item.id == 'bottom') return item;
+              });
+            }
 
-          targetLocation = availableLocations[randomIndex];
+            if (lastHit.hasOwnProperty('id')) {
+              let nextHitInDirection = nextHit.filter(hit => hit.id === lastHit.id);
+              targetLocation = nextHitInDirection;
+            }
+
+            if (!availableLocations.length) {
+              this.isRandomHit = true;
+              targetLocation = this.pickRandomLocation();
+            }
+          } else {
+            let randomIndex = Math.floor(Math.random() * availableLocations.length);
+            targetLocation = availableLocations[randomIndex];
+          }
         } else {
+          this.isRandomHit = true;
           targetLocation = this.pickRandomLocation();
         }
       }
